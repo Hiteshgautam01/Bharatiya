@@ -1,2 +1,2 @@
 # Bharatiya
-An android application
+An android application for indians
