@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <com.john.waveview.WaveView
+        android:id="@+id/wave_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        app:above_wave_color="#006633"
+        app:blow_wave_color="#3C893A"
+        app:progress="58"
+        app:wave_height="middle"
+        app:wave_hz="fast"
+        app:wave_length="middle" />
+
+    <TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/logo"
+    android:text="भारतीय"
+    android:textAlignment="center"
+    android:layout_marginTop="5dp"
+    android:textSize="30dp"
+    android:fontFamily="sans-serif-thin"
+        android:textColor="#000000"
+    />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/heading_filter"
+        />
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
+        >
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/fb_login"
+            android:layout_width="300dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingTop="@dimen/text_margin"
+            android:paddingBottom="@dimen/text_margin"
+            android:paddingLeft="@dimen/text_margin"
+            android:paddingRight="@dimen/text_margin"
+            />
+
+        <!--<com.google.android.gms.common.SignInButton-->
+            <!--android:id="@+id/google_login"-->
+            <!--android:layout_width="308dp"-->
+            <!--android:layout_height="61dp"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_below="@+id/fb_login"-->
+            <!--/>-->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/progress_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#38222222"
+        android:visibility="gone"
+        >
+        <com.rey.material.widget.ProgressView
+            android:id="@+id/progress"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            app:pv_circular="true"
+            app:pv_progressStyle="@style/rainbow"
+            app:pv_progressMode="indeterminate"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

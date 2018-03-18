@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -16,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,16 +37,21 @@ public class SplashScreenActivity extends AppCompatActivity {
     SharedPreferences sp;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (sp.contains("signed_in")){
-            setContentView(R.layout.activity_splash);
-            Constants.user_id = sp.getString("user_id", null);
-            checkIfExists();
+            Log.e(SplashScreenActivity.class.getSimpleName(), "SIGNIEDIN");
+            setContentView(R.layout.activity_splash_scree);
+//            Constants.user_id = sp.getString("user_id", null);
+            loadActivity(TimelineActivity.class);
+//            checkIfExists();
         }else {
-            loadActivity(LoginActivity.class);
+            Log.e(SplashScreenActivity.class.getSimpleName(), "OUT SIGNIEDIN");
+
+            loadActivity(SignUp.class);
         }
+
     }
 
     private void checkIfExists() {
