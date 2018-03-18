@@ -1,5 +1,8 @@
 package ducic.plumbum.com.bjp.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Project Name: 	<bjp>
  * Author List: 		Pankaj Baranwal
@@ -19,4 +22,6 @@ public class Constants {
     public static String url_action = "https://www.lithics.in/apis/bjp/verify.php";
 
     public static int paused_post_id = 0;
+    public static List<ActionDetails> actionDetails = new ArrayList<>();
+    public static boolean updating = false;
 }

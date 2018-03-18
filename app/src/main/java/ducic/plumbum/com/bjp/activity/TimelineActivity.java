@@ -42,7 +42,6 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
     private List<TimelineDetails> mItems = new ArrayList<>();
     private int fb_start_id = 0;
     private int youtube_start_id = 0;
-    private boolean updating = false;
     private RecyclerView recyclerView;
 
     @Override
@@ -111,7 +110,6 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
                         }
                         fb_start_id = mItems.get(mItems.size() - 3).getId()-1;
                         youtube_start_id = mItems.get(mItems.size() - 1).getId()-1;
-                        updating = false;
                     } catch (JSONException e) {
                         Toast.makeText(TimelineActivity.this, "ERRORORROROR", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -142,8 +140,8 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
 
     @Override
     public void loadMorePosts() {
-        if (!updating) {
-            updating = true;
+        if (!Constants.updating) {
+            Constants.updating = true;
             getData();
         }
     }
@@ -151,6 +149,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
     @Override
     protected void onResume() {
         super.onResume();
+        if (recyclerView != null)
         recyclerView.scrollToPosition(Constants.paused_post_id);
     }
 }

@@ -35,6 +35,7 @@ import ducic.plumbum.com.bjp.R;
 import ducic.plumbum.com.bjp.activity.CommentsActivity;
 import ducic.plumbum.com.bjp.application.VolleyHandling;
 import ducic.plumbum.com.bjp.interfaces.Posts;
+import ducic.plumbum.com.bjp.utils.ActionDetails;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.TimelineDetails;
 
@@ -82,13 +83,13 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.upvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recordAction(0, "na");
+                recordAction(0, "na", holder.mItem.getId());
             }
         });
         holder.downvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recordAction(1, "na");
+                recordAction(1, "na", holder.mItem.getId());
             }
         });
         holder.comment.setOnClickListener(new View.OnClickListener() {
@@ -113,30 +114,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         });
     }
 
-    private void recordAction(int action, String message){
-        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_action, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if (response.length() > 0){
-
-                }else{
-
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
-                return params;
-            }
-        };
-
-        VolleyHandling.getInstance().addToRequestQueue(request, "signin");
+    private void recordAction(int action, String message, int post_id){
+        Constants.actionDetails.add(new ActionDetails(action, message, post_id));
     }
 
     private void share(String url) {
@@ -152,7 +131,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         return timelineList.size();
     }
 
-    private void create_UI(final TimelineViewHolder holder, int position){
+    private void create_UI(final TimelineViewHolder holder, final int position){
         Constants.paused_post_id = position;
         holder.mItem =timelineList.get(position);
         String text;
@@ -169,7 +148,18 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                     }
                 });
                 builder.downloader(new OkHttp3Downloader(ctx));
-                builder.build().load(holder.mItem.getImage_link()).into(holder.image_item);
+                builder.build().load(holder.mItem.getImage_link()).into(holder.image_item, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        if (timelineList.size() - position < 4)
+                            Constants.updating = false;
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
                 text = holder.mItem.getMessage();
                 holder.message_item.setText(text);
                 text = holder.message_item.getText().toString();
