@@ -21,10 +21,15 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import ducic.plumbum.com.bjp.R;
 import ducic.plumbum.com.bjp.adapter.TimelineAdapter;
@@ -52,6 +57,11 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
         toolbar.setTitleTextColor(0xFFFF7830);
         setSupportActionBar(toolbar);
 
+        final int[] counter = {0};
+        final long[] time_current = {0};
+        final long[] time_after_five = {0};
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +77,9 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
         konfettiView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
+
+                counter[0]++;
+                if(counter[0] < 5){
                 konfettiView.build()
                         .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
                         .setDirection(0.0, 359.0)
@@ -77,9 +90,25 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
                         .addSizes(new Size(7, 5f))
                         .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                         .stream(50, 4000L);
-            }
-        });
+
+                        time_current[0] = System.currentTimeMillis();
+
+                }
+
+                else{
+                    time_after_five[0] = System.currentTimeMillis();
+                    if (counter[0] == 5) {
+                        Toast.makeText(TimelineActivity.this, "Your fingers are not stopping, Please try again after some time", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (time_after_five[0] - time_current[0] > 7000) {
+                        counter[0] = 0;
+                    }
+                }
+                }
+            });
     }
+
 
     private void init() {
         mAdapter = new TimelineAdapter(this, mItems, this);
