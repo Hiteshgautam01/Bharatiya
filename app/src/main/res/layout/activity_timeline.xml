@@ -29,15 +29,9 @@
             <nl.dionsegijn.konfetti.KonfettiView
                 android:id="@+id/konfettiView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <com.rey.material.widget.ImageView
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/bgimg"
-                android:scaleType="centerCrop">
-
-            </com.rey.material.widget.ImageView>
+                android:background="@drawable/bgimg"
+                />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
