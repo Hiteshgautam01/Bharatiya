@@ -34,6 +34,7 @@ import java.util.Map;
 import ducic.plumbum.com.bjp.R;
 import ducic.plumbum.com.bjp.activity.CommentsActivity;
 import ducic.plumbum.com.bjp.application.VolleyHandling;
+import ducic.plumbum.com.bjp.interfaces.Posts;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.TimelineDetails;
 
@@ -47,13 +48,15 @@ import ducic.plumbum.com.bjp.utils.TimelineDetails;
  */
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.TimelineViewHolder>{
 
-    private List<TimelineDetails> timelineList = new ArrayList<>();
+    public List<TimelineDetails> timelineList = new ArrayList<>();
     Context ctx;
     private static String KEY = "Add your authentication key for google";
+    private Posts post;
 
-    public TimelineAdapter(Context context, List<TimelineDetails> timelineList) {
+    public TimelineAdapter(Context context, List<TimelineDetails> timelineList, Posts post) {
         this.ctx = context;
         this.timelineList = timelineList;
+        this.post = post;
     }
 
     @Override
@@ -66,6 +69,13 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
     public void onBindViewHolder(TimelineAdapter.TimelineViewHolder holder, int position) {
         create_UI(holder, position);
         handleOnClicks(holder, position);
+        loadMorePosts(position);
+    }
+
+    private void loadMorePosts(int position) {
+        if (timelineList.size() - position < 4){
+            post.loadMorePosts();
+        }
     }
 
     private void handleOnClicks(final TimelineViewHolder holder, final int position) {
@@ -143,8 +153,10 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
     }
 
     private void create_UI(final TimelineViewHolder holder, int position){
+        Constants.paused_post_id = position;
         holder.mItem =timelineList.get(position);
         String text;
+        holder.source_name.setText(holder.mItem.getSource_name());
         switch (holder.mItem.getUI()){
             case 0:
                 holder.itl_wrapper.setVisibility(View.VISIBLE);
@@ -224,7 +236,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
 
         RelativeLayout itl_wrapper, video_wrapper, rl_over_thumbnail;
         ImageView image_item;
-        TextView message_item, extra;
+        TextView message_item, extra, source_name;
         YouTubeThumbnailView youtube_thumbnail;
         ImageView play_button;
         TextView title_video;
@@ -237,6 +249,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             video_wrapper = itemView.findViewById(R.id.video_wrapper);
             image_item = itemView.findViewById(R.id.image_item);
             message_item = itemView.findViewById(R.id.message_item);
+            source_name = itemView.findViewById(R.id.page_name);
             extra = itemView.findViewById(R.id.extra);
             youtube_thumbnail = itemView.findViewById(R.id.youtube_thumbnail);
             play_button = itemView.findViewById(R.id.play_button);

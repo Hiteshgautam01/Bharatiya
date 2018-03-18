@@ -17,4 +17,6 @@ public class Constants {
     public static String url_event_details = "https://www.lithics.in/apis/bjp/getAllPosts.php";
     public static String url_verify_user = "https://www.lithics.in/apis/bjp/verify.php";
     public static String url_action = "https://www.lithics.in/apis/bjp/verify.php";
+
+    public static int paused_post_id = 0;
 }

@@ -29,6 +29,7 @@ import java.util.Map;
 import ducic.plumbum.com.bjp.R;
 import ducic.plumbum.com.bjp.adapter.TimelineAdapter;
 import ducic.plumbum.com.bjp.application.VolleyHandling;
+import ducic.plumbum.com.bjp.interfaces.Posts;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.TimelineDetails;
 import nl.dionsegijn.konfetti.KonfettiView;
@@ -36,12 +37,14 @@ import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements Posts{
     private TimelineAdapter mAdapter;
     private List<TimelineDetails> mItems = new ArrayList<>();
     private int fb_start_id = 0;
     private int youtube_start_id = 0;
-    
+    private boolean updating = false;
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +63,6 @@ public class TimelineActivity extends AppCompatActivity {
         });
 
         getData();
-
 
         final KonfettiView konfettiView = findViewById(R.id.konfettiView);
         konfettiView.setOnClickListener(new View.OnClickListener() {
@@ -81,9 +83,9 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void init() {
-        mAdapter = new TimelineAdapter(this, mItems);
+        mAdapter = new TimelineAdapter(this, mItems, this);
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -101,8 +103,15 @@ public class TimelineActivity extends AppCompatActivity {
                         for (int i = 0; i < jA.length(); i++){
                             mItems.add(new TimelineDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("message"), jA.getJSONObject(i).getString("url"), jA.getJSONObject(i).getString("image_link"), jA.getJSONObject(i).getString("source_name"), jA.getJSONObject(i).getInt("source")));
                         }
-                        Log.e(getClass().getSimpleName(), "Going to init");
-                        init();
+                        if (fb_start_id == 0 && youtube_start_id == 0)
+                            init();
+                        else{
+                            mAdapter.timelineList = mItems;
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        fb_start_id = mItems.get(mItems.size() - 3).getId()-1;
+                        youtube_start_id = mItems.get(mItems.size() - 1).getId()-1;
+                        updating = false;
                     } catch (JSONException e) {
                         Toast.makeText(TimelineActivity.this, "ERRORORROROR", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
@@ -129,5 +138,19 @@ public class TimelineActivity extends AppCompatActivity {
         };
 
         VolleyHandling.getInstance().addToRequestQueue(request, "signin");
+    }
+
+    @Override
+    public void loadMorePosts() {
+        if (!updating) {
+            updating = true;
+            getData();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        recyclerView.scrollToPosition(Constants.paused_post_id);
     }
 }

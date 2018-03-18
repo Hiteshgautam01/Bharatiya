@@ -45,7 +45,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/ic_launcher"
-                        android:scaleType="centerCrop"
                         android:padding="10dp"
                         android:layout_marginBottom="8dp"
                         />
@@ -137,20 +136,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="#8111"
                         android:text="TIME"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="|"
-                        android:layout_marginLeft="@dimen/recycler_margin"
-                        android:layout_marginRight="@dimen/recycler_margin"
-                        />
-                    <TextView
-                        android:id="@+id/date_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#8111"
-                        android:text="Date"
                         />
                 </LinearLayout>
                 <View
