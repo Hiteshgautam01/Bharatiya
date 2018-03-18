@@ -72,11 +72,11 @@ public class TimelineActivity extends AppCompatActivity implements Posts{
                         .setDirection(0.0, 359.0)
                         .setSpeed(1f, 3f)
                         .setFadeOutEnabled(true)
-                        .setTimeToLive(2000L)
+                        .setTimeToLive(1500L)
                         .addShapes(Shape.RECT, Shape.CIRCLE)
-                        .addSizes(new Size(3, 5f))
+                        .addSizes(new Size(7, 5f))
                         .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                        .stream(300, 5000L);
+                        .stream(50, 4000L);
             }
         });
     }
