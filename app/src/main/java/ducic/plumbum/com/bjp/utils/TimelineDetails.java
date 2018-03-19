@@ -1,5 +1,7 @@
 package ducic.plumbum.com.bjp.utils;
 
+import android.util.Log;
+
 /**
  * Project Name: 	<bjp>
  * Author List: 		Pankaj Baranwal
@@ -17,8 +19,19 @@ public class TimelineDetails {
     private int UI;
     // source_id = 0 for facebook, 1 for youtube, 2 for others
     private int source_id;
+    private int votes;
 
-    public TimelineDetails(int id, String message, String url, String image_link, String source_name, int source_id){
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    String time;
+
+    public TimelineDetails(int id, String message, String url, String image_link, String source_name, int source_id, int votes, String time){
         this.id = id;
         this.message = message;
         this.url = url;
@@ -29,33 +42,17 @@ public class TimelineDetails {
         else {
 //            this.url = url;
             if (image_link.length()==0)
-                this.UI = 2;
-            else if (message.length() == 0)
                 this.UI = 1;
+            else if (message.length() == 0)
+                this.UI = 2;
             else
                 this.UI = 0;
         }
         this.image_link = image_link;
         this.source_name = source_name;
         this.source_id = source_id;
-
-    }
-
-    public TimelineDetails(String message, String url, String image_link, String source_name, int UI){
-        this.message = message;
-        if (UI == 1)
-            this.url = "https://www.youtube.com/watch?v=" + url;
-        else
-            this.url = url;
-        this.image_link = image_link;
-        this.source_name = source_name;
-        this.UI = UI;
-    }
-
-    public TimelineDetails(String message, String url, String image_link){
-        this.image_link = image_link;
-        this.message = message;
-        this.url = url;
+        this.votes = votes;
+        this.time = time.substring(0, 10) + " " + time.substring(11, 16);
     }
 
     public int getId() {
@@ -112,5 +109,13 @@ public class TimelineDetails {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 }

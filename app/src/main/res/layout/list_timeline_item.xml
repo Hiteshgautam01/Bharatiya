@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="3dp"
     android:paddingBottom="-10dp">
 
@@ -97,7 +98,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="center"
-                            android:src="@drawable/ic_play_circle_filled_black_24dp"
+                            app:srcCompat="@drawable/ic_play_circle_filled_black_24dp"
                             />
                     </RelativeLayout>
                     <TextView
@@ -164,13 +165,14 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@drawable/ic_thumb_up_black_24dp"
+                            app:srcCompat="@drawable/ic_thumb_up_black_24dp"
                             android:layout_marginRight="4dp"
                             />
                         <TextView
+                            android:id="@+id/count_votes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Like"
+                            android:text=""
                             android:textSize="10sp"
                             />
                     </LinearLayout>
@@ -185,14 +187,8 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@drawable/ic_thumb_down_black_24dp"
+                            app:srcCompat="@drawable/ic_thumb_down_black_24dp"
                             android:layout_marginRight="4dp"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Dislike"
-                            android:textSize="10sp"
                             />
                     </LinearLayout>
                     <LinearLayout
@@ -206,7 +202,7 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@drawable/ic_comment_black_24dp"
+                            app:srcCompat="@drawable/ic_comment_black_24dp"
                             android:layout_marginRight="4dp"
                             />
                         <TextView
@@ -227,7 +223,7 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@drawable/ic_share_black_24dp"
+                            app:srcCompat="@drawable/ic_share_black_24dp"
                             android:layout_marginRight="4dp"
                             />
                         <TextView

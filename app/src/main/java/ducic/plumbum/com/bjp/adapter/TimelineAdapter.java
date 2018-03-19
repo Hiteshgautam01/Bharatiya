@@ -3,6 +3,7 @@ package ducic.plumbum.com.bjp.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,28 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.jakewharton.picasso.OkHttp3Downloader;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ducic.plumbum.com.bjp.R;
 import ducic.plumbum.com.bjp.activity.CommentsActivity;
-import ducic.plumbum.com.bjp.application.VolleyHandling;
 import ducic.plumbum.com.bjp.interfaces.Posts;
-import ducic.plumbum.com.bjp.utils.ActionDetails;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.TimelineDetails;
 
@@ -83,13 +76,16 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.upvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recordAction(0, "na", holder.mItem.getId());
+//                Log.e("TIMELINE DETAILS", Integer.toString(holder.mItem.getVotes()));
+                holder.count_votes.setText(String.valueOf(holder.mItem.getVotes() + 1));
+                recordAction(1, "na", holder.mItem.getId());
             }
         });
         holder.downvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recordAction(1, "na", holder.mItem.getId());
+                holder.count_votes.setText(String.valueOf(holder.mItem.getVotes() - 1));
+                recordAction(-1, "na", holder.mItem.getId());
             }
         });
         holder.comment.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +111,15 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
     }
 
     private void recordAction(int action, String message, int post_id){
-        Constants.actionDetails.add(new ActionDetails(action, message, post_id));
+        if (Constants.post_id.contains(post_id)) {
+            int position = Constants.post_id.indexOf(post_id);
+            Constants.actions.remove(position);
+            Constants.messages.remove(position);
+            Constants.post_id.remove(position);
+        }
+        Constants.actions.add(action);
+        Constants.messages.add(message);
+        Constants.post_id.add(post_id);
     }
 
     private void share(String url) {
@@ -139,41 +143,27 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         switch (holder.mItem.getUI()){
             case 0:
                 holder.itl_wrapper.setVisibility(View.VISIBLE);
-                Picasso.Builder builder = new Picasso.Builder(ctx);
-                builder.listener(new Picasso.Listener() {
-                    @Override
-                    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                        holder.image_item
-                                .setImageResource(R.mipmap.ic_launcher);
-                    }
-                });
-                builder.downloader(new OkHttp3Downloader(ctx));
-                builder.build().load(holder.mItem.getImage_link()).into(holder.image_item, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        if (timelineList.size() - position < 4)
-                            Constants.updating = false;
-                    }
+                Picasso.with(ctx)
+                        .load(holder.mItem.getImage_link())
+                        .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                        .config(Bitmap.Config.RGB_565)
+                        .into(holder.image_item, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+                                if (timelineList.size() - position < 4)
+                                    Constants.updating = false;
+                            }
 
-                    @Override
-                    public void onError() {
-
-                    }
-                });
-                text = holder.mItem.getMessage();
-                holder.message_item.setText(text);
-                text = holder.message_item.getText().toString();
-                if (text.contains("..."))
-                    holder.extra.setVisibility(View.VISIBLE);
+                            @Override
+                            public void onError() {
+                                holder.image_item
+                                        .setImageResource(R.mipmap.ic_launcher);
+                            }
+                        });
                 break;
             case 1:
                 holder.itl_wrapper.setVisibility(View.VISIBLE);
                 holder.image_item.setVisibility(View.GONE);
-                text = holder.mItem.getMessage();
-                holder.message_item.setText(text);
-                text = holder.message_item.getText().toString();
-                if (text.contains("..."))
-                    holder.extra.setVisibility(View.VISIBLE);
                 break;
             case 2:
                 holder.itl_wrapper.setVisibility(View.VISIBLE);
@@ -218,6 +208,16 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                 });
                 break;
         }
+        if (holder.mItem.getVotes()!=0)
+            holder.count_votes.setText(Integer.toString(holder.mItem.getVotes()));
+        else
+            holder.count_votes.setText("Votes");
+        text = holder.mItem.getMessage();
+        holder.message_item.setText(text);
+        text = holder.message_item.getText().toString();
+        if (text.contains("..."))
+            holder.extra.setVisibility(View.VISIBLE);
+        holder.time_text.setText(holder.mItem.getTime());
     }
 
     public class TimelineViewHolder extends RecyclerView.ViewHolder{
@@ -226,6 +226,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
 
         RelativeLayout itl_wrapper, video_wrapper, rl_over_thumbnail;
         ImageView image_item;
+        TextView count_votes, time_text;
         TextView message_item, extra, source_name;
         YouTubeThumbnailView youtube_thumbnail;
         ImageView play_button;
@@ -247,6 +248,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             rl_over_thumbnail = itemView.findViewById(R.id.rl_over_thumbnail);
             upvote = itemView.findViewById(R.id.upvote_ll);
             downvote = itemView.findViewById(R.id.downvote_ll);
+            count_votes = itemView.findViewById(R.id.count_votes);
+            time_text = itemView.findViewById(R.id.time_text);
             comment = itemView.findViewById(R.id.comment_ll);
             share = itemView.findViewById(R.id.share_ll);
         }
