@@ -1,5 +1,6 @@
 package ducic.plumbum.com.bjp.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -39,6 +40,9 @@ import ducic.plumbum.com.bjp.application.VolleyHandling;
 import ducic.plumbum.com.bjp.interfaces.Posts;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.TimelineDetails;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
 
 public class TimelineActivity extends AppCompatActivity implements Posts, SwipeRefreshLayout.OnRefreshListener{
