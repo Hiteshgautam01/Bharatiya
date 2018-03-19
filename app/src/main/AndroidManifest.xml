@@ -47,7 +47,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.SignUp" />
-        <activity android:name=".activity.TimelineActivity" />
+        <activity android:name=".activity.TimelineActivity"
+                  android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 
