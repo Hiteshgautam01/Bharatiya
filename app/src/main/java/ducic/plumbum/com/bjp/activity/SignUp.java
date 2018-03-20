@@ -2,16 +2,13 @@ package ducic.plumbum.com.bjp.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.BounceInterpolator;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,8 +39,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ducic.plumbum.com.bjp.R;
-import ducic.plumbum.com.bjp.application.VolleyHandling;
+import ducic.plumbum.com.bjp.application.BhartiyaApplication;
 import ducic.plumbum.com.bjp.utils.Constants;
+import ducic.plumbum.com.bjp.utils.Utils;
 
 public class SignUp extends AppCompatActivity {
 
@@ -53,6 +51,7 @@ public class SignUp extends AppCompatActivity {
     CallbackManager callbackManager;
     RelativeLayout loading;
     ProgressView progress;
+    View view = findViewById(R.id.signup_wrapper);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +59,6 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         setUpFacebook();
 //        setupGoogle();
-
     }
 
 
@@ -105,13 +103,13 @@ public class SignUp extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                Toast.makeText(SignUp.this, "Request Cancelled? TRY AGAIN!", Toast.LENGTH_SHORT).show();
+                makeToast("Request Cancelled? TRY AGAIN!");
             }
 
             @Override
             public void onError(FacebookException exception) {
                 Log.e(SignUp.class.getSimpleName(), exception.toString());
-                Toast.makeText(SignUp.this, "ERR, Someth#$% We@# WRONG!", Toast.LENGTH_SHORT).show();
+                makeToast("Facebook login failed");
             }
         });
     }
@@ -126,18 +124,23 @@ public class SignUp extends AppCompatActivity {
                         if (response != null && response.getError() == null){
                             try {
                                 String user_id;
+                                if (response.getJSONObject().has("name")){
+                                    Constants.user_name = response.getJSONObject().getString("name");
+                                }else{
+                                    Constants.user_name = "Anonymous User";
+                                }
                                 if (response.getJSONObject().has("email")) {
-                                    Constants.user_email = response.getJSONObject().getString("email");
-                                    user_id = Constants.user_email;
+                                    user_id = response.getJSONObject().getString("email");
                                 }
                                 else {
-                                    Constants.user_email = null;
                                     user_id = response.getJSONObject().getString("id");
                                 }
                                 submitData(user_id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }else{
+                            makeToast("Couldn't submit response");
                         }
                     }
                 });
@@ -163,70 +166,71 @@ public class SignUp extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Constants.user_email = account.getEmail();
+            Constants.user_name = account.getEmail();
             submitData(account.getEmail());
         } catch (ApiException e) {
             Log.e("Google SignIn Error", e + "");
-            Toast.makeText(this, "Google behaving weirdly!", Toast.LENGTH_SHORT).show();
+            makeToast("Google behaving weirdly!");
         }
     }
 
     void submitData(final String username){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SignUp.this);
+        SharedPreferences sp = BhartiyaApplication.getInstance().getSharedPreferences();
         final SharedPreferences.Editor editor = sp.edit();
-        editor.putBoolean("signed_in", true);
-        editor.apply();
-        Intent intent = new Intent(SignUp.this, TimelineActivity.class);
-        startActivity(intent);
-        finish();
-//        loading = findViewById(R.id.progress_rl);
-//        progress = findViewById(R.id.progress);
-//        progress.start();
-//        loading.setVisibility(View.VISIBLE);
-//        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_signup, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                if (response.length() > 0){
-//                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(SignUp.this);
-//                    final SharedPreferences.Editor editor = sp.edit();
-//                    editor.putBoolean("signed_in", true);
-//                    editor.putString("user_id", response);
-//                    editor.apply();
-//                    Constants.user_id = response;
-//                    loading.setVisibility(View.GONE);
-//                    progress.stop();
-//                    Intent intent = new Intent(SignUp.this, SplashScreenActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                }else{
-//                    loading.setVisibility(View.GONE);
-//                    progress.stop();
-//                    Toast.makeText(SignUp.this, "Server is no longer speaking to you", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                loading.setVisibility(View.GONE);
-//                progress.stop();
-//                Toast.makeText(SignUp.this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
-//                error.printStackTrace();
-//            }
-//        }){
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String,String> params = new HashMap<>();
-//                params.put("user_name", username);
-//                params.put("image", "Coming soon!");
-//                return params;
-//            }
-//        };
-//
-//        VolleyHandling.getInstance().addToRequestQueue(request, "signin");
+        loadActivity(TimelineActivity.class);
+        loading = findViewById(R.id.progress_rl);
+        progress = findViewById(R.id.progress);
+        progress.start();
+        loading.setVisibility(View.VISIBLE);
+        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_signup, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response.length() > 0){
+                    editor.putBoolean("signed_in", true);
+                    editor.putString("user_id", response);
+                    editor.apply();
+                    Constants.user_id = response;
+                    loading.setVisibility(View.GONE);
+                    progress.stop();
+                    loadActivity(SplashScreenActivity.class);
+                }else{
+                    loading.setVisibility(View.GONE);
+                    progress.stop();
+                    makeToast("Server response incorrect");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.setVisibility(View.GONE);
+                progress.stop();
+                makeToast("Error connecting to server");
+                error.printStackTrace();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("user_name", Constants.user_name);
+                params.put("user_id", username);
+                return params;
+            }
+        };
+
+        BhartiyaApplication.getInstance().addToRequestQueue(request, "signin");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    private void makeToast(String s){
+        Utils.makeToast(view, s);
+    }
+
+    private void loadActivity(Class activity){
+        Utils.loadActivity(this, activity);
+        finish();
     }
 }
