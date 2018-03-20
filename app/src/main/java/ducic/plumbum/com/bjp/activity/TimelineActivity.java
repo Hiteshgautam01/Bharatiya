@@ -2,6 +2,7 @@ package ducic.plumbum.com.bjp.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -66,10 +69,30 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         toolbar.setTitleTextColor(0xFFFF7830);
         setSupportActionBar(toolbar);
 
+        final Button button_goto  = findViewById(R.id.go_to_top);
+
+        AppBarLayout appBarLayout = findViewById(R.id.app_bar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+                    button_goto.setVisibility(View.VISIBLE);
+                } else if (verticalOffset == 0) {
+                    button_goto.setVisibility(View.GONE);
+                }
+            }
+        });
+
         final int[] counter = {0};
         final long[] time_current = {0};
         final long[] time_after_five = {0};
 
+        button_goto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerView.smoothScrollToPosition(0);
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
