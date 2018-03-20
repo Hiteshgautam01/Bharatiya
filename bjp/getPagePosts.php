@@ -5,6 +5,8 @@
 	// source = 0 (facebook), 1 (youtube), 2 (others)
 	$statement = $pdo->prepare("CREATE TABLE IF NOT EXISTS fb_posts (id INT AUTO_INCREMENT, message VARCHAR(2038), url VARCHAR(2038), image_link VARCHAR(2038), source_name VARCHAR(2038), source INT NOT NULL, timedate VARCHAR(255) NOT NULL, fb_id VARCHAR(255) NOT NULL, PRIMARY KEY(id), KEY(fb_id)) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 	$statement->execute();
+	$statement = $pdo->prepare("CREATE TABLE IF NOT EXISTS comments (id INT AUTO_INCREMENT, user_id INT NOT NULL, post_id INT NOT NULL, message VARCHAR(2038), PRIMARY KEY(id));");
+    $statement->execute();
 	$statement = $pdo->prepare("CREATE TABLE IF NOT EXISTS youtube_posts (id INT AUTO_INCREMENT, message VARCHAR(2038), url VARCHAR(2038), image_link VARCHAR(2038), source_name VARCHAR(2038), source INT NOT NULL, timedate VARCHAR(255) NOT NULL ,PRIMARY KEY(id));");
 	$statement->execute();
 
