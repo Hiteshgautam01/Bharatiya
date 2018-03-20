@@ -22,8 +22,6 @@ import ducic.plumbum.com.bjp.application.BhartiyaApplication;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.Utils;
 
-import static ducic.plumbum.com.bjp.utils.Utils.makeToast;
-
 /**
  * Project Name: 	<bjp>
  * Author List: 		Pankaj Baranwal
@@ -34,7 +32,6 @@ import static ducic.plumbum.com.bjp.utils.Utils.makeToast;
  */
 public class SplashScreenActivity extends AppCompatActivity {
     SharedPreferences sp;
-    private View view = findViewById(R.id.activity_wrapper);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,20 +58,20 @@ public class SplashScreenActivity extends AppCompatActivity {
                     if (response.contentEquals(Constants.user_id)){
                         loadActivity(TimelineActivity.class);
                     }else{
-                        makeToast(view, "Couldn't verify ID. Please login again");
+                        makeToast("Couldn't verify ID. Please login again");
                         SharedPreferences.Editor editor = sp.edit();
                         editor.remove("signed_in");
                         editor.apply();
                         loadActivity(SignUp.class);
                     }
                 }else{
-                    makeToast(view, "Please restart the app");
+                    makeToast("Please restart the app");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                makeToast(view, "Please restart the app");
+                makeToast("Please restart the app");
                 error.printStackTrace();
                 finish();
             }
@@ -94,6 +91,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         };
 
         BhartiyaApplication.getInstance().addToRequestQueue(request, "verify_user");
+    }
+
+    private void makeToast(String s){
+        View view = findViewById(R.id.activity_wrapper);
+        Utils.makeToast(view, s);
     }
 
     private void loadActivity(Class activity){

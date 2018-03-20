@@ -20,10 +20,11 @@ public class Constants {
     public static String url_event_details = "https://www.lithics.in/apis/bjp/getAllPosts.php";
     public static String url_verify_user = "https://www.lithics.in/apis/bjp/verify.php";
     public static String url_action = "https://www.lithics.in/apis/bjp/recordActivity.php";
+    public static String url_record_comment = "https://www.lithics.in/apis/bjp/recordCommentsActivity.php";
 
     public static int paused_post_id = 0;
     public static List<Integer> actions = new ArrayList<>();
-    public static List<String> messages = new ArrayList<>();
+//    public static List<String> messages = new ArrayList<>();
     public static List<Integer> post_id = new ArrayList<>();
     public static boolean updating = false;
 }

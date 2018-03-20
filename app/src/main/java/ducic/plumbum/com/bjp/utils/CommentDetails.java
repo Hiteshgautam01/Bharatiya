@@ -7,10 +7,12 @@ package ducic.plumbum.com.bjp.utils;
 public class CommentDetails {
     String user_name;
     String message;
+    int id;
 
-    public CommentDetails(String user_name, String message) {
+    public CommentDetails(int id, String user_name, String message) {
         this.user_name = user_name;
         this.message = message;
+        this.id = id;
     }
 
     public String getUser_name() {
@@ -27,5 +29,13 @@ public class CommentDetails {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

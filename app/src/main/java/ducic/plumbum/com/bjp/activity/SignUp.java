@@ -3,7 +3,6 @@ package ducic.plumbum.com.bjp.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,8 +23,6 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -51,7 +48,6 @@ public class SignUp extends AppCompatActivity {
     CallbackManager callbackManager;
     RelativeLayout loading;
     ProgressView progress;
-    View view = findViewById(R.id.signup_wrapper);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,26 +60,22 @@ public class SignUp extends AppCompatActivity {
 
     // setupGoogle()
     private void setupGoogle() {
-        google_login = findViewById(R.id.google_login);
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        // Build a GoogleSignInClient with the options specified by gso.
-        final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        if (account != null){
+//        google_login = findViewById(R.id.google_login);
+//        // Configure sign-in to request the user's ID, email address, and basic
+//        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestEmail()
+//                .build();
+//        // Build a GoogleSignInClient with the options specified by gso.
+//        final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 //
-//        }
-
-        google_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, 200);
-            }
-        });
+//        google_login.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//                startActivityForResult(signInIntent, 200);
+//            }
+//        });
     }
 
     //setUpFacebook
@@ -226,6 +218,7 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void makeToast(String s){
+        View view = findViewById(R.id.signup_wrapper);
         Utils.makeToast(view, s);
     }
 

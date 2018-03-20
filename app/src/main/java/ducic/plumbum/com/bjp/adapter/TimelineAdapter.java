@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
-import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -78,14 +76,14 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             public void onClick(View view) {
 //                Log.e("TIMELINE DETAILS", Integer.toString(holder.mItem.getVotes()));
                 holder.count_votes.setText(String.valueOf(holder.mItem.getVotes() + 1));
-                recordAction(1, "na", holder.mItem.getId());
+                recordAction(1, holder.mItem.getId());
             }
         });
         holder.downvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.count_votes.setText(String.valueOf(holder.mItem.getVotes() - 1));
-                recordAction(-1, "na", holder.mItem.getId());
+                recordAction(-1, holder.mItem.getId());
             }
         });
         holder.comment.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +91,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             public void onClick(View view) {
                 final Intent intent = new Intent(ctx, CommentsActivity.class);
                 ctx.startActivity(intent);
-                ((Activity)ctx).overridePendingTransition(0, 0);
+//                ((Activity)ctx).overridePendingTransition(0, 0);
             }
         });
         holder.share.setOnClickListener(new View.OnClickListener() {
@@ -110,15 +108,13 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         });
     }
 
-    private void recordAction(int action, String message, int post_id){
+    private void recordAction(int action, int post_id){
         if (Constants.post_id.contains(post_id)) {
             int position = Constants.post_id.indexOf(post_id);
             Constants.actions.remove(position);
-            Constants.messages.remove(position);
             Constants.post_id.remove(position);
         }
         Constants.actions.add(action);
-        Constants.messages.add(message);
         Constants.post_id.add(post_id);
     }
 
