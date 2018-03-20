@@ -139,7 +139,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         Constants.paused_post_id = position;
         holder.mItem =timelineList.get(position);
         String text;
-        holder.source_name.setText(holder.mItem.getSource_name());
+//        holder.source_name.setText(holder.mItem.getSource_name());
         switch (holder.mItem.getUI()){
             case 0:
                 holder.itl_wrapper.setVisibility(View.VISIBLE);
@@ -227,7 +227,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         RelativeLayout itl_wrapper, video_wrapper, rl_over_thumbnail;
         ImageView image_item;
         TextView count_votes, time_text;
-        TextView message_item, extra, source_name;
+        TextView message_item, extra;
+//        TextView source_name;
         YouTubeThumbnailView youtube_thumbnail;
         ImageView play_button;
         TextView title_video;
@@ -240,7 +241,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             video_wrapper = itemView.findViewById(R.id.video_wrapper);
             image_item = itemView.findViewById(R.id.image_item);
             message_item = itemView.findViewById(R.id.message_item);
-            source_name = itemView.findViewById(R.id.page_name);
+//            source_name = itemView.findViewById(R.id.page_name);
             extra = itemView.findViewById(R.id.extra);
             youtube_thumbnail = itemView.findViewById(R.id.youtube_thumbnail);
             play_button = itemView.findViewById(R.id.play_button);
