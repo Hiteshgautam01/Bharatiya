@@ -1,6 +1,8 @@
 package ducic.plumbum.com.bjp.application;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,19 +12,25 @@ import com.android.volley.toolbox.Volley;
  * Created by pankaj on 25/10/17.
  */
 
-public class VolleyHandling extends Application {
+public class BhartiyaApplication extends Application {
     //Declare a private  RequestQueue variable
     private RequestQueue requestQueue;
 
-    private static VolleyHandling mInstance;
+    private static BhartiyaApplication mInstance;
+    private SharedPreferences sp;
+
     public void onCreate()
     {
         super.onCreate();
         mInstance=this;
-
+        sp = PreferenceManager.getDefaultSharedPreferences(mInstance);
     }
 
-    public static synchronized VolleyHandling getInstance()
+    public SharedPreferences getSharedPreferences(){
+        return sp;
+    }
+
+    public static synchronized BhartiyaApplication getInstance()
     {
         return mInstance;
     }

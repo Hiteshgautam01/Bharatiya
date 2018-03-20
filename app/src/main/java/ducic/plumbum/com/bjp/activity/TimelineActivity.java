@@ -27,19 +27,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import ducic.plumbum.com.bjp.R;
 import ducic.plumbum.com.bjp.adapter.TimelineAdapter;
-import ducic.plumbum.com.bjp.application.VolleyHandling;
+import ducic.plumbum.com.bjp.application.BhartiyaApplication;
 import ducic.plumbum.com.bjp.interfaces.Posts;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.TimelineDetails;
@@ -205,7 +200,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
             }
         };
 
-        VolleyHandling.getInstance().addToRequestQueue(request, "signin");
+        BhartiyaApplication.getInstance().addToRequestQueue(request, "signin");
     }
 
     @Override
@@ -265,7 +260,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
             }
         };
 
-        VolleyHandling.getInstance().addToRequestQueue(request, "signin");
+        BhartiyaApplication.getInstance().addToRequestQueue(request, "signin");
     }
 
     @Override

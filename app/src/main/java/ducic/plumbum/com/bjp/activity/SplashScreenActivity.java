@@ -1,14 +1,11 @@
 package ducic.plumbum.com.bjp.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -17,13 +14,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
 import ducic.plumbum.com.bjp.R;
-import ducic.plumbum.com.bjp.application.VolleyHandling;
+import ducic.plumbum.com.bjp.application.BhartiyaApplication;
 import ducic.plumbum.com.bjp.utils.Constants;
+import ducic.plumbum.com.bjp.utils.Utils;
+
+import static ducic.plumbum.com.bjp.utils.Utils.makeToast;
 
 /**
  * Project Name: 	<bjp>
@@ -35,19 +34,18 @@ import ducic.plumbum.com.bjp.utils.Constants;
  */
 public class SplashScreenActivity extends AppCompatActivity {
     SharedPreferences sp;
+    private View view = findViewById(R.id.activity_wrapper);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (sp.contains("signed_in")){
-            Log.e(SplashScreenActivity.class.getSimpleName(), "SIGNIEDIN");
-            setContentView(R.layout.activity_splash_scree);
+            setContentView(R.layout.activity_splash_screen);
 //            Constants.user_id = sp.getString("user_id", null);
             loadActivity(TimelineActivity.class);
 //            checkIfExists();
         }else {
-            Log.e(SplashScreenActivity.class.getSimpleName(), "OUT SIGNIEDIN");
 
             loadActivity(SignUp.class);
         }
@@ -63,21 +61,22 @@ public class SplashScreenActivity extends AppCompatActivity {
                     if (response.contentEquals(Constants.user_id)){
                         loadActivity(TimelineActivity.class);
                     }else{
-                        makeToast("Couldn't verify ID. Please login again");
+                        makeToast(view, "Couldn't verify ID. Please login again");
                         SharedPreferences.Editor editor = sp.edit();
                         editor.remove("signed_in");
                         editor.apply();
-                        loadActivity(LoginActivity.class);
+                        loadActivity(SignUp.class);
                     }
                 }else{
-                    makeToast("Please restart the app");
+                    makeToast(view, "Please restart the app");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                makeToast("Please restart the app");
+                makeToast(view, "Please restart the app");
                 error.printStackTrace();
+                finish();
             }
         }){
             @Override
@@ -94,18 +93,11 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
         };
 
-        VolleyHandling.getInstance().addToRequestQueue(request, "verify_user");
+        BhartiyaApplication.getInstance().addToRequestQueue(request, "verify_user");
     }
 
-    private void makeToast(String s) {
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_wrapper),
-                s, Snackbar.LENGTH_SHORT);
-        snackbar.show();
-    }
-
-    private void loadActivity(Class activity) {
-        Intent intent = new Intent(SplashScreenActivity.this, activity);
-        startActivity(intent);
+    private void loadActivity(Class activity){
+        Utils.loadActivity(this, activity);
         finish();
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
  * Date of Creation:    <14/02/2018>
  */
 public class Constants {
-    public static String user_email = null;
+    public static String user_name = null;
     public static String user_id = null;
     public static String quote = "";
 
