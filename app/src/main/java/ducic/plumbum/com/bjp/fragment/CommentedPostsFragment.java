@@ -1,21 +1,18 @@
-package ducic.plumbum.com.bjp.activity;
+package ducic.plumbum.com.bjp.fragment;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -33,24 +30,35 @@ import java.util.List;
 import java.util.Map;
 
 import ducic.plumbum.com.bjp.R;
+import ducic.plumbum.com.bjp.activity.TimelineActivity;
 import ducic.plumbum.com.bjp.adapter.TimelineAdapter;
 import ducic.plumbum.com.bjp.application.BhartiyaApplication;
 import ducic.plumbum.com.bjp.interfaces.Posts;
 import ducic.plumbum.com.bjp.utils.Constants;
 import ducic.plumbum.com.bjp.utils.TimelineDetails;
 import ducic.plumbum.com.bjp.utils.Utils;
-import nl.dionsegijn.konfetti.KonfettiView;
-import nl.dionsegijn.konfetti.models.Shape;
-import nl.dionsegijn.konfetti.models.Size;
 
 
-public class TimelineActivity extends AppCompatActivity implements Posts, SwipeRefreshLayout.OnRefreshListener{
+/**
+ * A fragment representing a list of Items.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * interface.
+ */
+public class CommentedPostsFragment extends Fragment implements Posts {
     private TimelineAdapter mAdapter;
     private List<TimelineDetails> mItems = new ArrayList<>();
     private int fb_start_id = 0;
     private int youtube_start_id = 0;
     private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
+
+    // TODO: Customize parameter argument names
+    private static final String ARG_COLUMN_COUNT = "column-count";
+    // TODO: Customize parameters
+    private int mColumnCount = 1;
+    private OnListFragmentInteractionListener mListener;
+
+    View view;
     private int number_of_retries = 0;
     long previous_millis;
 
@@ -58,38 +66,70 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public CommentedPostsFragment() {
+    }
+
+    // TODO: Customize parameter initialization
+    @SuppressWarnings("unused")
+    public static CommentedPostsFragment newInstance(int columnCount) {
+        CommentedPostsFragment fragment = new CommentedPostsFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
-        Toolbar toolbar =  findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(0xFFFF7830);
-        setSupportActionBar(toolbar);
+
+        if (getArguments() != null) {
+            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_savestar, container, false);
+        // Set the adapter
+        Context context = view.getContext();
+        recyclerView = view.findViewById(R.id.list);
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
 
         getData();
-    }
 
+        return view;
+    }
 
     private void init() {
-        mAdapter = new TimelineAdapter(this, mItems, this);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        if (mItems.size()>0) {
+            mAdapter = new TimelineAdapter(getContext(), mItems, this);
 
-        recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
+            recyclerView.setHasFixedSize(true);
 
-        recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
+            recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(mAdapter);
-        initAppBarLayout();
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(mAdapter);
+        }else {
+            RelativeLayout empty_layout = view.findViewById(R.id.empty_layout);
+            empty_layout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
     }
 
-
     void getData(){
-        final ProgressBar loading = findViewById(R.id.progress_bar);
-        loading.setIndeterminate(true);
-        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_event_details, new Response.Listener<String>() {
+
+        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_commented_posts, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (response.length() > 0){
@@ -105,10 +145,16 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                             mAdapter.notifyDataSetChanged();
                         }
                         previous_millis = System.currentTimeMillis();
-                        fb_start_id = mItems.get(mItems.size() - 3).getId()-1;
-                        youtube_start_id = mItems.get(mItems.size() - 1).getId()-1;
-                        swipeRefreshLayout.setRefreshing(false);
-                        loading.setIndeterminate(false);
+                        for (int i = mItems.size() - 1; i > 0; i--){
+                            if (mItems.get(i).getSource_id() == 0) {
+                                fb_start_id = mItems.get(i).getId() - 1;
+                                break;
+                            }
+                            else if (mItems.get(i).getSource_id() == 1){
+                                youtube_start_id = mItems.get(i).getId()-1;
+                            }
+
+                        }
                     } catch (JSONException e) {
                         makeToast("Error loading timeline");
                         Log.e(TimelineActivity.class.getSimpleName(), e.toString());
@@ -134,11 +180,12 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                 Map<String,String> params = new HashMap<>();
                 params.put("page_first_source", String.valueOf(fb_start_id));
                 params.put("page_second_source", String.valueOf(youtube_start_id));
+                params.put("user_id", Constants.user_id);
                 return params;
             }
         };
 
-        BhartiyaApplication.getInstance().addToRequestQueue(request, "signin");
+        BhartiyaApplication.getInstance().addToRequestQueue(request, "commentfragment");
     }
 
     private void sendActions() {
@@ -185,85 +232,9 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         BhartiyaApplication.getInstance().addToRequestQueue(request, "record_actions");
     }
 
-    @Override
-    public void onRefresh() {
-        fb_start_id = 0;
-        youtube_start_id = 0;
-        getData();
-    }
-
-    private void initAppBarLayout() {
-        final Button button_goto = findViewById(R.id.go_to_top);
-        AppBarLayout appBarLayout = findViewById(R.id.app_bar);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
-                    button_goto.setVisibility(View.VISIBLE);
-                } else if (verticalOffset == 0) {
-                    button_goto.setVisibility(View.GONE);
-                }
-            }
-        });
-        button_goto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recyclerView.smoothScrollToPosition(0);
-            }
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TimelineActivity.this, ProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        final int[] counter = {0};
-        final long[] time_current = {0};
-        final long[] time_after_five = {0};
-
-        final KonfettiView konfettiView = findViewById(R.id.konfettiView);
-        konfettiView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-
-                counter[0]++;
-                if(counter[0] < 5){
-                    konfettiView.build()
-                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                            .setDirection(0.0, 359.0)
-                            .setSpeed(1f, 3f)
-                            .setFadeOutEnabled(true)
-                            .setTimeToLive(1500L)
-                            .addShapes(Shape.RECT, Shape.CIRCLE)
-                            .addSizes(new Size(7, 5f))
-                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                            .stream(50, 4000L);
-
-                    time_current[0] = System.currentTimeMillis();
-
-                }
-
-                else{
-                    time_after_five[0] = System.currentTimeMillis();
-                    if (counter[0] == 5) {
-                        makeToast("Your fingers are not stopping, Please try again after some time");
-                    }
-
-                    if (time_after_five[0] - time_current[0] > 7000) {
-                        counter[0] = 0;
-                    }
-                }
-            }
-        });
-    }
-
     private void makeToast(String s){
-        View view = findViewById(android.R.id.content);
-        Utils.makeToast(view, s);
+        View _view = view.findViewById(android.R.id.content);
+        Utils.makeToast(_view, s);
     }
 
     @Override
@@ -273,18 +244,39 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         }
     }
 
+
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (recyclerView != null)
-            recyclerView.scrollToPosition(Constants.paused_post_id);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnListFragmentInteractionListener) {
+            mListener = (OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    public void onDetach() {
+        super.onDetach();
         if (Constants.actions.size() > 0){
             sendActions();
         }
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnListFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onListFragmentInteraction(TimelineDetails item);
     }
 }

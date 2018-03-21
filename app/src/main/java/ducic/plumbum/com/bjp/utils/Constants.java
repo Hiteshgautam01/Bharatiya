@@ -18,9 +18,12 @@ public class Constants {
 
     public static String url_signup = "https://www.lithics.in/apis/bjp/signup.php";
     public static String url_event_details = "https://www.lithics.in/apis/bjp/getAllPosts.php";
+    public static String url_comment_details = "https://www.lithics.in/apis/bjp/getAllComments.php";
     public static String url_verify_user = "https://www.lithics.in/apis/bjp/verify.php";
     public static String url_action = "https://www.lithics.in/apis/bjp/recordActivity.php";
     public static String url_record_comment = "https://www.lithics.in/apis/bjp/recordCommentsActivity.php";
+    public static String url_voted_posts = "https://www.lithics.in/apis/bjp/getVotedPosts.php";
+    public static String url_commented_posts = "https://www.lithics.in/apis/bjp/getCommentedPosts.php";
 
     public static int paused_post_id = 0;
     public static List<Integer> actions = new ArrayList<>();
