@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -49,6 +48,7 @@ import nl.dionsegijn.konfetti.models.Size;
 
 public class TimelineActivity extends AppCompatActivity implements Posts, SwipeRefreshLayout.OnRefreshListener{
     private TimelineAdapter mAdapter;
+    private List<TimelineDetails> originalItems = new ArrayList<>();
     private List<TimelineDetails> mItems = new ArrayList<>();
     private int fb_start_id = 0;
     private int youtube_start_id = 0;
@@ -74,6 +74,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
 
 
     private void init() {
+        originalItems = new ArrayList<>(mItems);
         mAdapter = new TimelineAdapter(this, mItems, this);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -234,13 +235,13 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
 
                         .setIcon(R.drawable.ic_filter_list_black_1_24dp)
                         .setTitle("FILTER POSTS")
-                        .setMessage("What you want to see ?")
-                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener()
+                        .setMessage("What do you want to see?")
+                        .setNeutralButton("Both", new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                Toast.makeText(TimelineActivity.this, "You Clicked on Cancel", Toast.LENGTH_SHORT).show();
+                                filterPosts(-1);
                             }
                         })
 
@@ -249,8 +250,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                             @Override
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                Toast.makeText(TimelineActivity.this, "Now you can only see Images posts", Toast.LENGTH_SHORT).show();
-
+                                filterPosts(0);
                             }
                         })
 
@@ -259,7 +259,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                             @Override
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                Toast.makeText(TimelineActivity.this, "Now you can only see Videos posts", Toast.LENGTH_SHORT).show();
+                                filterPosts(1);
                             }
                         })
                         .show();
@@ -304,6 +304,20 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                 }
             }
         });
+    }
+
+    private void filterPosts(int UI){
+        mItems.clear();
+        if (UI == -1) {
+            mItems = new ArrayList<>(originalItems);
+        }else{
+            for (TimelineDetails i : originalItems) {
+                if (i.getSource_id() == UI) {
+                    mItems.add(i);
+                }
+            }
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     private void makeToast(String s){
