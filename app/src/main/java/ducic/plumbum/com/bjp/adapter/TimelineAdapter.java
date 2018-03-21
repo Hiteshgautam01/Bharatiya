@@ -49,7 +49,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
 
     public TimelineAdapter(Context context, List<TimelineDetails> timelineList, Posts post) {
         this.ctx = context;
-        this.timelineList = timelineList;
+        this.timelineList.addAll(timelineList);
         this.post = post;
     }
 
@@ -240,6 +240,13 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         if (text.contains("..."))
             holder.extra.setVisibility(View.VISIBLE);
         holder.time_text.setText(holder.mItem.getTime());
+    }
+
+    public void updateList(List<TimelineDetails> list){
+        timelineList.clear();
+        timelineList.addAll(list);
+        Log.e("myAdapter", list.size()+"");
+        this.notifyDataSetChanged();
     }
 
     public class TimelineViewHolder extends RecyclerView.ViewHolder{
