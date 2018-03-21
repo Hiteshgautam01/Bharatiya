@@ -1,11 +1,13 @@
 package ducic.plumbum.com.bjp.activity;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,6 +67,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         setSupportActionBar(toolbar);
 
         final Button button_goto  = findViewById(R.id.go_to_top);
+        final Button button_filter_posts = findViewById(R.id.filter_posts);
 
         AppBarLayout appBarLayout = findViewById(R.id.app_bar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -75,6 +78,47 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                 } else if (verticalOffset == 0) {
                     button_goto.setVisibility(View.GONE);
                 }
+            }
+        });
+
+
+        button_filter_posts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(TimelineActivity.this)
+
+                        .setIcon(R.drawable.ic_filter_list_black_1_24dp)
+                        .setTitle("FILTER POSTS")
+                        .setMessage("What you want to see ?")
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                Toast.makeText(TimelineActivity.this, "You Clicked on Cancel", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+
+                        .setPositiveButton("Only Images", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                Toast.makeText(TimelineActivity.this, "Now you can only see Images posts", Toast.LENGTH_SHORT).show();
+
+                            }
+                        })
+
+                        .setNegativeButton("Only Videos", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                Toast.makeText(TimelineActivity.this, "Now you can only see Videos posts", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
             }
         });
 
