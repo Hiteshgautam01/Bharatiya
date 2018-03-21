@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_marginTop="12dp"
     android:layout_marginRight="12dp"
-    android:layout_marginLeft="12dp"
-    android:padding="8dp"
-    android:background="#fff"
-    >
+    android:layout_marginLeft="12dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="4dp">
+
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/name"
@@ -21,17 +26,29 @@
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
             />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":"
             android:textColor="@color/colorPrimary"
             />
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                />
+        </LinearLayout>
     </LinearLayout>
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#000"
-        />
+
+
+    </android.support.v7.widget.CardView>
+
 </LinearLayout>

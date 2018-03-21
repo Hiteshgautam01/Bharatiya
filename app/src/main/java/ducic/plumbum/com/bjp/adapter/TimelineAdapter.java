@@ -209,7 +209,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                         youTubeThumbnailLoader.setOnThumbnailLoadedListener(new YouTubeThumbnailLoader.OnThumbnailLoadedListener() {
                             @Override
                             public void onThumbnailError(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader.ErrorReason errorReason) {
-                                Log.e("YOUTUBE", "ERROR " + errorReason.toString());
+//                                Log.e("YOUTUBE", "ERROR " + errorReason.toString());
                             }
 
                             @Override
@@ -224,7 +224,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
 
                     @Override
                     public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-                        Log.e("InitializationFailure", youTubeInitializationResult.toString());
+//                        Log.e("InitializationFailure", youTubeInitializationResult.toString());
                     }
                 });
                 break;

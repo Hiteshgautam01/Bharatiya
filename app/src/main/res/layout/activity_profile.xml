@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_above="@+id/tabs"
+            android:layout_below="@+id/tabs"
             android:layout_marginTop="@dimen/text_margin"
             />
         <android.support.design.widget.TabLayout
@@ -25,11 +25,11 @@
             app:tabMode="fixed"
             app:tabMaxWidth="0dp"
             app:tabGravity="fill"
-            android:background="#000000"
+            android:background="@color/colorPrimary"
             app:tabIndicatorColor="#FFFFFF"
-            app:tabTextColor="#FFFFFF"
-            app:tabSelectedTextColor="#FFFFFF"
-            android:layout_alignParentBottom="true"
+            app:tabTextColor="#000000"
+            app:tabSelectedTextColor="#ffffff"
+
             />
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

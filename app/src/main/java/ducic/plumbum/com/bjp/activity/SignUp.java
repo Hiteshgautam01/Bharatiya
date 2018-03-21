@@ -78,7 +78,7 @@ public class SignUp extends AppCompatActivity {
                     editor.putString("user_id", response);
                     editor.apply();
                     Constants.user_id = response;
-                    Log.e("user_id_SignUp", response);
+//                    Log.e("user_id_SignUp", response);
                     loading.setVisibility(View.GONE);
                     progress.stop();
                     loadActivity(SplashScreenActivity.class);
@@ -152,7 +152,7 @@ public class SignUp extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException exception) {
-                Log.e(SignUp.class.getSimpleName(), exception.toString());
+//                Log.e(SignUp.class.getSimpleName(), exception.toString());
                 makeToast("Facebook login failed");
             }
         });
@@ -213,7 +213,7 @@ public class SignUp extends AppCompatActivity {
             Constants.user_name = account.getEmail();
             submitData(account.getEmail());
         } catch (ApiException e) {
-            Log.e("Google SignIn Error", e + "");
+//            Log.e("Google SignIn Error", e + "");e
             makeToast("Google behaving weirdly!");
         }
     }

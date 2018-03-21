@@ -85,7 +85,7 @@ public class CommentsActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(CommentsActivity.class.getSimpleName(), error.toString());
+//                Log.e(CommentsActivity.class.getSimpleName(), error.toString());
                 makeToast("Couldn't submit response");
 
             }
@@ -117,7 +117,7 @@ public class CommentsActivity extends AppCompatActivity {
                         mAdapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         makeToast("Error loading comments");
-                        Log.e(CommentsActivity.class.getSimpleName(), e.toString());
+//                        Log.e(CommentsActivity.class.getSimpleName(), e.toString());
                     }
                 }else{
                     makeToast("No response from server");
@@ -126,7 +126,7 @@ public class CommentsActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(CommentsActivity.class.getSimpleName(), error.toString());
+//                Log.e(CommentsActivity.class.getSimpleName(), error.toString());
                 makeToast("Couldn't fetch responses");
 
             }

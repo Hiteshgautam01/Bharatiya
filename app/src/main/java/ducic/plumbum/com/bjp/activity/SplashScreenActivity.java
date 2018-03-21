@@ -42,8 +42,8 @@ public class SplashScreenActivity extends AppCompatActivity {
             setContentView(R.layout.activity_splash_screen);
             Constants.user_id = sp.getString("user_id", null);
             Constants.user_name = sp.getString("user_name", null);
-            Log.e("user_name", Constants.user_name);
-            Log.e("user_id", Constants.user_id);
+//            Log.e("user_name", Constants.user_name);
+//            Log.e("user_id", Constants.user_id);
             loadActivity(TimelineActivity.class);
 //            checkIfExists();
         }else {

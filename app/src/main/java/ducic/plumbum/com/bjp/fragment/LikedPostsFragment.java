@@ -158,7 +158,7 @@ public class LikedPostsFragment extends Fragment implements Posts {
                         }
                     } catch (JSONException e) {
                         makeToast("Error loading timeline");
-                        Log.e(TimelineActivity.class.getSimpleName(), e.toString());
+//                        Log.e(TimelineActivity.class.getSimpleName(), e.toString());
                     }
                 }else{
                     makeToast("No response from server");
@@ -167,7 +167,7 @@ public class LikedPostsFragment extends Fragment implements Posts {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TimelineActivity.class.getSimpleName(), error.toString());
+//                Log.e(TimelineActivity.class.getSimpleName(), error.toString());
                 if (number_of_retries < 3){
                     number_of_retries++;
                     getData();
