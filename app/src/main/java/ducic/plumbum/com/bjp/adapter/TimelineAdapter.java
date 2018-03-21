@@ -1,9 +1,11 @@
 package ducic.plumbum.com.bjp.adapter;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -103,6 +105,16 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.itl_wrapper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String url = holder.mItem.getUrl();
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setPackage("com.android.chrome");
+                try {
+                    ctx.startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    i.setPackage(null);
+                    ctx.startActivity(i);
+                }
 
             }
         });
