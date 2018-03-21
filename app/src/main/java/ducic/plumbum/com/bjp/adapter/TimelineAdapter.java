@@ -49,7 +49,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
 
     public TimelineAdapter(Context context, List<TimelineDetails> timelineList, Posts post) {
         this.ctx = context;
-        this.timelineList = timelineList;
+        this.timelineList.addAll(timelineList);
         this.post = post;
     }
 
@@ -115,6 +115,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                     i.setPackage(null);
                     ctx.startActivity(i);
                 }
+
             }
         });
     }
@@ -132,7 +133,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
     private void share(String url) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Found a great post for you!\n"+url+"\n\nYou can find many more related posts on this cool app:\nVisit <LINE-TO-APP> now!");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Found a great post for you!\n"+url+"\n\nYou can find many more related posts on this cool app:\nVisit https://goo.gl/vYNmAJ now!");
         sendIntent.setType("text/plain");
         ctx.startActivity(sendIntent);
     }
@@ -209,7 +210,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                         youTubeThumbnailLoader.setOnThumbnailLoadedListener(new YouTubeThumbnailLoader.OnThumbnailLoadedListener() {
                             @Override
                             public void onThumbnailError(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader.ErrorReason errorReason) {
-//                                Log.e("YOUTUBE", "ERROR " + errorReason.toString());
+                                Log.e("YOUTUBE", "ERROR " + errorReason.toString());
                             }
 
                             @Override
@@ -224,7 +225,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
 
                     @Override
                     public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-//                        Log.e("InitializationFailure", youTubeInitializationResult.toString());
+                        Log.e("InitializationFailure", youTubeInitializationResult.toString());
                     }
                 });
                 break;
@@ -241,6 +242,13 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.time_text.setText(holder.mItem.getTime());
     }
 
+    public void updateList(List<TimelineDetails> list){
+        timelineList.clear();
+        timelineList.addAll(list);
+        Log.e("myAdapter", list.size()+"");
+        this.notifyDataSetChanged();
+    }
+
     public class TimelineViewHolder extends RecyclerView.ViewHolder{
 
         TimelineDetails mItem;
@@ -249,7 +257,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         ImageView image_item;
         TextView count_votes, time_text;
         TextView message_item, extra;
-//        TextView source_name;
+        //        TextView source_name;
         YouTubeThumbnailView youtube_thumbnail;
         ImageView play_button;
         TextView title_video;

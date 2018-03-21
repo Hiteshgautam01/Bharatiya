@@ -1,13 +1,12 @@
 package ducic.plumbum.com.bjp.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -50,6 +48,7 @@ import nl.dionsegijn.konfetti.models.Size;
 
 public class TimelineActivity extends AppCompatActivity implements Posts, SwipeRefreshLayout.OnRefreshListener{
     private TimelineAdapter mAdapter;
+    private List<TimelineDetails> originalItems = new ArrayList<>();
     private List<TimelineDetails> mItems = new ArrayList<>();
     private int fb_start_id = 0;
     private int youtube_start_id = 0;
@@ -57,6 +56,9 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
     private SwipeRefreshLayout swipeRefreshLayout;
     private int number_of_retries = 0;
     long previous_millis;
+    boolean isLoading = false;
+    boolean first_time = true;
+    int filter = -1;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -70,87 +72,12 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         toolbar.setTitleTextColor(0xFFFF7830);
         setSupportActionBar(toolbar);
 
-        final Button button_goto  = findViewById(R.id.go_to_top);
-        final Button button_filter_posts = findViewById(R.id.filter_posts);
-
-        AppBarLayout appBarLayout = findViewById(R.id.app_bar);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
-                    button_goto.setVisibility(View.VISIBLE);
-                } else if (verticalOffset == 0) {
-                    button_goto.setVisibility(View.GONE);
-                }
-            }
-        });
-
-
-        button_filter_posts.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(TimelineActivity.this)
-
-                        .setIcon(R.drawable.ic_filter_list_black_1_24dp)
-                        .setTitle("FILTER POSTS")
-                        .setMessage("What you want to see ?")
-                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                Toast.makeText(TimelineActivity.this, "You Clicked on Cancel", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-
-                        .setPositiveButton("Only Images", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                Toast.makeText(TimelineActivity.this, "Now you can only see Images posts", Toast.LENGTH_SHORT).show();
-
-                            }
-                        })
-
-                        .setNegativeButton("Only Videos", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                Toast.makeText(TimelineActivity.this, "Now you can only see Videos posts", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .show();
-            }
-        });
-
-        final int[] counter = {0};
-        final long[] time_current = {0};
-        final long[] time_after_five = {0};
-
-        button_goto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recyclerView.smoothScrollToPosition(0);
-            }
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         getData();
     }
 
 
     private void init() {
+        mItems.addAll(originalItems);
         mAdapter = new TimelineAdapter(this, mItems, this);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -176,22 +103,32 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                     number_of_retries = 0;
                     try {
                         JSONArray jA = new JSONArray(response);
-                        for (int i = 0; i < jA.length(); i++){
-                            mItems.add(new TimelineDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("message"), jA.getJSONObject(i).getString("url"), jA.getJSONObject(i).getString("image_link"), jA.getJSONObject(i).getString("source_name"), jA.getJSONObject(i).getInt("source"), jA.getJSONObject(i).getString("counter").contentEquals("null")?0:jA.getJSONObject(i).getInt("counter"), jA.getJSONObject(i).getString("timedate")));
-                        }
                         if (fb_start_id == 0 && youtube_start_id == 0)
+                            originalItems.clear();
+                        for (int i = 0; i < jA.length(); i++){
+                            TimelineDetails tD = new TimelineDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("message"), jA.getJSONObject(i).getString("url"), jA.getJSONObject(i).getString("image_link"), jA.getJSONObject(i).getString("source_name"), jA.getJSONObject(i).getInt("source"), jA.getJSONObject(i).getString("counter").contentEquals("null")?0:jA.getJSONObject(i).getInt("counter"), jA.getJSONObject(i).getString("timedate"));
+                            if (!originalItems.contains(tD)) {
+                                originalItems.add(tD);
+                                Log.e("getDATA", "Dont have it");
+                            }else{
+                                Log.e("getDATA", "HAVE IT");
+                            }
+                        }
+                        if (first_time) {
+                            first_time = false;
                             init();
+                        }
                         else{
-                            mAdapter.notifyDataSetChanged();
+                            filterPosts();
                         }
                         previous_millis = System.currentTimeMillis();
-                        fb_start_id = mItems.get(mItems.size() - 3).getId()-1;
-                        youtube_start_id = mItems.get(mItems.size() - 1).getId()-1;
+                        fb_start_id = originalItems.get(originalItems.size() - 3).getId()-1;
+                        youtube_start_id = originalItems.get(originalItems.size() - 1).getId()-1;
                         swipeRefreshLayout.setRefreshing(false);
                         loading.setIndeterminate(false);
                     } catch (JSONException e) {
                         makeToast("Error loading timeline");
-//                        Log.e(TimelineActivity.class.getSimpleName(), e.toString());
+                        Log.e(TimelineActivity.class.getSimpleName(), e.toString());
                     }
                 }else{
                     makeToast("No response from server");
@@ -200,7 +137,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                Log.e(TimelineActivity.class.getSimpleName(), error.toString());
+                Log.e(TimelineActivity.class.getSimpleName(), error.toString());
                 if (number_of_retries < 3){
                     number_of_retries++;
                     getData();
@@ -274,6 +211,8 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
 
     private void initAppBarLayout() {
         final Button button_goto = findViewById(R.id.go_to_top);
+        final Button button_filter_posts = findViewById(R.id.filter_posts);
+
         AppBarLayout appBarLayout = findViewById(R.id.app_bar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -298,6 +237,48 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
             public void onClick(View view) {
                 Intent intent = new Intent(TimelineActivity.this, ProfileActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        button_filter_posts.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(TimelineActivity.this)
+
+                        .setIcon(R.drawable.ic_filter_list_black_1_24dp)
+                        .setTitle("FILTER POSTS")
+                        .setMessage("What do you want to see?")
+                        .setNeutralButton("Both", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                filter = -1;
+                                filterPosts();
+                            }
+                        })
+
+                        .setPositiveButton("Only Images", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                filter = 0;
+                                filterPosts();
+                            }
+                        })
+
+                        .setNegativeButton("Only Videos", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                filter = 1;
+                                filterPosts();
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -339,6 +320,20 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                 }
             }
         });
+    }
+
+    private void filterPosts(){
+        mItems.clear();
+        if (filter == -1) {
+            Log.e("IN -1", "YES" + originalItems.size());
+            mItems.addAll(originalItems);
+        } else {
+            Log.e("IN ", filter + "" + originalItems.size());
+            for (TimelineDetails i : originalItems)
+                if (i.getSource_id() == filter)
+                    mItems.add(i);
+        }
+        mAdapter.updateList(mItems);
     }
 
     private void makeToast(String s){
