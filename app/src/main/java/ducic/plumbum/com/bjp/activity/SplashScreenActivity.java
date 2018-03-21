@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.android.volley.AuthFailureError;
@@ -39,7 +40,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (sp.contains("signed_in")){
             setContentView(R.layout.activity_splash_screen);
-//            Constants.user_id = sp.getString("user_id", null);
+            Constants.user_id = sp.getString("user_id", null);
+            Constants.user_name = sp.getString("user_name", null);
+            Log.e("user_name", Constants.user_name);
+            Log.e("user_id", Constants.user_id);
             loadActivity(TimelineActivity.class);
 //            checkIfExists();
         }else {
@@ -94,7 +98,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void makeToast(String s){
-        View view = findViewById(R.id.activity_wrapper);
+        View view = findViewById(android.R.id.content);
         Utils.makeToast(view, s);
     }
 

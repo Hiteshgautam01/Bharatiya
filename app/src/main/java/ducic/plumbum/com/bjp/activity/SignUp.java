@@ -53,8 +53,60 @@ public class SignUp extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+//        temp_signup();
         setUpFacebook();
 //        setupGoogle();
+    }
+
+    private void temp_signup() {
+        Constants.user_name = "Pankaj Baranwal";
+        SharedPreferences sp = BhartiyaApplication.getInstance().getSharedPreferences();
+        final SharedPreferences.Editor editor = sp.edit();
+        editor.putString("user_name", Constants.user_name);
+        editor.apply();
+        final String user_id = "123456";
+        loadActivity(TimelineActivity.class);
+        loading = findViewById(R.id.progress_rl);
+        progress = findViewById(R.id.progress);
+        progress.start();
+        loading.setVisibility(View.VISIBLE);
+        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_signup, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response.length() > 0){
+                    editor.putBoolean("signed_in", true);
+                    editor.putString("user_id", response);
+                    editor.apply();
+                    Constants.user_id = response;
+                    Log.e("user_id_SignUp", response);
+                    loading.setVisibility(View.GONE);
+                    progress.stop();
+                    loadActivity(SplashScreenActivity.class);
+                }else{
+                    loading.setVisibility(View.GONE);
+                    progress.stop();
+                    makeToast("Server response incorrect");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.setVisibility(View.GONE);
+                progress.stop();
+                makeToast("Error connecting to server");
+                error.printStackTrace();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("user_name", Constants.user_name);
+                params.put("user_id", user_id);
+                return params;
+            }
+        };
+
+        BhartiyaApplication.getInstance().addToRequestQueue(request, "signin");
     }
 
 
@@ -180,6 +232,7 @@ public class SignUp extends AppCompatActivity {
                 if (response.length() > 0){
                     editor.putBoolean("signed_in", true);
                     editor.putString("user_id", response);
+                    editor.putString("user_name", Constants.user_name);
                     editor.apply();
                     Constants.user_id = response;
                     loading.setVisibility(View.GONE);
@@ -218,7 +271,7 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void makeToast(String s){
-        View view = findViewById(R.id.signup_wrapper);
+        View view = findViewById(android.R.id.content);
         Utils.makeToast(view, s);
     }
 
