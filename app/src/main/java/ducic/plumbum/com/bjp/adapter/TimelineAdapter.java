@@ -65,9 +65,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
     }
 
     private void loadMorePosts(int position) {
-        if (timelineList.size() - position < 4){
+        if (timelineList.size() - position < 4)
             post.loadMorePosts();
-        }
     }
 
     private void handleOnClicks(final TimelineViewHolder holder, final int position) {
@@ -90,6 +89,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
             @Override
             public void onClick(View view) {
                 final Intent intent = new Intent(ctx, CommentsActivity.class);
+                intent.putExtra("post_id", holder.mItem.getId());
                 ctx.startActivity(intent);
 //                ((Activity)ctx).overridePendingTransition(0, 0);
             }
@@ -146,8 +146,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                         .into(holder.image_item, new com.squareup.picasso.Callback() {
                             @Override
                             public void onSuccess() {
-                                if (timelineList.size() - position < 4)
-                                    Constants.updating = false;
+
                             }
 
                             @Override
@@ -163,7 +162,22 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                 break;
             case 2:
                 holder.itl_wrapper.setVisibility(View.VISIBLE);
-                Picasso.with(ctx).load(holder.mItem.getImage_link()).fit().error(R.mipmap.ic_launcher).into(holder.image_item);
+                Picasso.with(ctx)
+                        .load(holder.mItem.getImage_link())
+                        .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                        .config(Bitmap.Config.RGB_565)
+                        .into(holder.image_item, new com.squareup.picasso.Callback() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onError() {
+                                holder.image_item
+                                        .setImageResource(R.mipmap.ic_launcher);
+                            }
+                        });
                 holder.message_item.setVisibility(View.GONE);
                 break;
             case 3:

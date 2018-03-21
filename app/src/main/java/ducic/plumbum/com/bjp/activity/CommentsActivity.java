@@ -76,10 +76,10 @@ public class CommentsActivity extends AppCompatActivity {
                 if (response.length()>5){
                     makeToast("Server Error");
                 }else{
-                    CommentDetails item = new CommentDetails(Integer.parseInt(response), Constants.user_id, comment.getText().toString());
+                    CommentDetails item = new CommentDetails(Integer.parseInt(response), Constants.user_name, comment.getText().toString());
                     mItems.add(item);
-                    mAdapter.commentDetails.add(item);
                     mAdapter.notifyDataSetChanged();
+                    comment.setText("");
                 }
             }
         }, new Response.ErrorListener() {
@@ -104,15 +104,14 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     void getData(){
-        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_event_details, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, Constants.url_comment_details, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (response.length() > 0){
                     try {
                         JSONArray jA = new JSONArray(response);
-                        for (int i = 0; i < jA.length(); i++){
+                        for (int i = 0; i < jA.length(); i++)
                             mItems.add(new CommentDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("user_name"), jA.getJSONObject(i).getString("message")));
-                        }
                         init();
                         mAdapter.commentDetails = mItems;
                         mAdapter.notifyDataSetChanged();
@@ -145,7 +144,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void makeToast(String s){
-        View view = findViewById(R.id.activity_wrapper);
+        View view = findViewById(android.R.id.content);
         Utils.makeToast(view, s);
     }
 }
