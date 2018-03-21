@@ -64,7 +64,12 @@ public class CommentsActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendComment(comment.getText().toString());
+                if (comment.getText().toString().length() == 0){
+                    makeToast("Please enter a message first");
+                }
+                else {
+                    sendComment(comment.getText().toString());
+                }
             }
         });
     }

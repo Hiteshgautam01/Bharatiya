@@ -19,6 +19,11 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
@@ -27,11 +32,6 @@
             android:textColor="@color/colorPrimary"
             />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,14 +39,17 @@
             android:textColor="@color/colorPrimary"
             />
 
+        </LinearLayout>
+
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
                 />
+
         </LinearLayout>
-    </LinearLayout>
+
 
 
     </android.support.v7.widget.CardView>

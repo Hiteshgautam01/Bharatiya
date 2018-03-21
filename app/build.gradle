@@ -18,6 +18,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    configurations {
+        all {
+            exclude module: 'httpclient'
+        }
+    }
+
 }
 
 dependencies {
