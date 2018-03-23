@@ -36,7 +36,7 @@
 	    	//The ID of the Facebook page in question.
 			$id = $spreadsheet_data[$i];
 			// full_picture
-			$attach = "https://graph.facebook.com/v2.5/$id/posts?fields=full_picture,permalink_url,message,story,created_time&limit=5&access_token=$accessToken";
+			$attach = "https://graph.facebook.com/v2.5/$id/posts?fields=full_picture,permalink_url,message,story,created_time&limit=2&access_token=$accessToken";
 			$attached = @file_get_contents($attach);
 			$fbdata = json_decode($attached, true);
 			foreach ((array)$fbdata['data'] as $post)
@@ -82,7 +82,7 @@
 									try{
 										$statement->execute([$msg, $url, $imgurl, $id, 0, $created_time, $fb_id, $fb_id]);
 									}catch (PDOException $e){
-										echo ($e->getMessage());
+										// echo ($e->getMessage());
 									}
 									// [$msg, $value[0]->url, $imgurl, $id, 0]
 									// break;

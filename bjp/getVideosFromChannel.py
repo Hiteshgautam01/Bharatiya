@@ -30,7 +30,7 @@ for row in reader:
 		a.append(row[2])
 
 for i in a:
-	url = "https://www.googleapis.com/youtube/v3/search?key={}&channelId={}&part=snippet,id&order=date&maxResults=10".format(API_KEY, i)
+	url = "https://www.googleapis.com/youtube/v3/search?key={}&channelId={}&part=snippet,id&order=date&maxResults=2".format(API_KEY, i)
 	output_json = requests.get(url)
 	s = json.loads(output_json.text)
 	# cur.execute("INSERT INTO youtube_posts (message, url, image_link, source_name, source, timedate) VALUES (%s, %s, %s, %s, %s);", (s['items'][0]['snippet']['title'], s['items'][0]['id']['videoId'], '', s['items'][0]['snippet']['channelTitle'], 1, s['items'][0]['snippet']['publishedAt']))
