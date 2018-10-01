@@ -10,9 +10,9 @@ package ducic.plumbum.com.bjp.utils;
  */
 public final class Config {
 
+    public static final String YOUTUBE_API_KEY = "AIzaSyBE9mbp0nr232TJ6vvbQ4Hxt-3aoktK2Yw";
+
     private Config() {
     }
-
-    public static final String YOUTUBE_API_KEY = "AIzaSyBE9mbp0nr232TJ6vvbQ4Hxt-3aoktK2Yw";
 
 }

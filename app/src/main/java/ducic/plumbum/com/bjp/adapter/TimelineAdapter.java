@@ -40,11 +40,11 @@ import ducic.plumbum.com.bjp.utils.TimelineDetails;
  * Global Variables:	<>
  * Date of Creation:    <07/02/2018>
  */
-public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.TimelineViewHolder>{
+public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.TimelineViewHolder> {
 
+    private static String KEY = "Add your authentication key for google";
     public List<TimelineDetails> timelineList = new ArrayList<>();
     Context ctx;
-    private static String KEY = "Add your authentication key for google";
     private Posts post;
 
     public TimelineAdapter(Context context, List<TimelineDetails> timelineList, Posts post) {
@@ -120,7 +120,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         });
     }
 
-    private void recordAction(int action, int post_id){
+    private void recordAction(int action, int post_id) {
         if (Constants.post_id.contains(post_id)) {
             int position = Constants.post_id.indexOf(post_id);
             Constants.actions.remove(position);
@@ -133,7 +133,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
     private void share(String url) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Found a great post for you!\n"+url+"\n\nYou can find many more related posts on this cool app:\nVisit https://goo.gl/vYNmAJ now!");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Found a great post for you!\n" + url + "\n\nYou can find many more related posts on this cool app:\nVisit https://goo.gl/vYNmAJ now!");
         sendIntent.setType("text/plain");
         ctx.startActivity(sendIntent);
     }
@@ -143,12 +143,12 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         return timelineList.size();
     }
 
-    private void create_UI(final TimelineViewHolder holder, final int position){
+    private void create_UI(final TimelineViewHolder holder, final int position) {
         Constants.paused_post_id = position;
-        holder.mItem =timelineList.get(position);
+        holder.mItem = timelineList.get(position);
         String text;
 //        holder.source_name.setText(holder.mItem.getSource_name());
-        switch (holder.mItem.getUI()){
+        switch (holder.mItem.getUI()) {
             case 0:
                 holder.itl_wrapper.setVisibility(View.VISIBLE);
                 Picasso.with(ctx)
@@ -230,7 +230,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
                 });
                 break;
         }
-        if (holder.mItem.getVotes()!=0)
+        if (holder.mItem.getVotes() != 0)
             holder.count_votes.setText(Integer.toString(holder.mItem.getVotes()));
         else
             holder.count_votes.setText("Votes");
@@ -242,14 +242,14 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.Timeli
         holder.time_text.setText(holder.mItem.getTime());
     }
 
-    public void updateList(List<TimelineDetails> list){
+    public void updateList(List<TimelineDetails> list) {
         timelineList.clear();
         timelineList.addAll(list);
-        Log.e("myAdapter", list.size()+"");
+        Log.e("myAdapter", list.size() + "");
         this.notifyDataSetChanged();
     }
 
-    public class TimelineViewHolder extends RecyclerView.ViewHolder{
+    public class TimelineViewHolder extends RecyclerView.ViewHolder {
 
         TimelineDetails mItem;
 

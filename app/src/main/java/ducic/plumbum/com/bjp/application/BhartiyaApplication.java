@@ -13,60 +13,55 @@ import com.android.volley.toolbox.Volley;
  */
 
 public class BhartiyaApplication extends Application {
+    private static BhartiyaApplication mInstance;
     //Declare a private  RequestQueue variable
     private RequestQueue requestQueue;
-
-    private static BhartiyaApplication mInstance;
     private SharedPreferences sp;
 
-    public void onCreate()
-    {
+    public static synchronized BhartiyaApplication getInstance() {
+        return mInstance;
+    }
+
+    public void onCreate() {
         super.onCreate();
-        mInstance=this;
+        mInstance = this;
         sp = PreferenceManager.getDefaultSharedPreferences(mInstance);
     }
 
-    public SharedPreferences getSharedPreferences(){
+    public SharedPreferences getSharedPreferences() {
         return sp;
     }
 
-    public static synchronized BhartiyaApplication getInstance()
-    {
-        return mInstance;
-    }
     /**
-     Create a getRequestQueue() method to return the instance of
-     RequestQueue.This kind of implementation ensures that
-     the variable is instatiated only once and the same
-     instance is used throughout the application
+     * Create a getRequestQueue() method to return the instance of
+     * RequestQueue.This kind of implementation ensures that
+     * the variable is instatiated only once and the same
+     * instance is used throughout the application
      **/
-    public RequestQueue getRequestQueue()
-    {
-        if (requestQueue==null)
-            requestQueue= Volley.newRequestQueue(getApplicationContext());
+    public RequestQueue getRequestQueue() {
+        if (requestQueue == null)
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         return requestQueue;
     }
 
     /**
-     public method to add the Request to the the single
-     instance of RequestQueue created above.Setting a tag to every
-     request helps in grouping them. Tags act as identifier
-     for requests and can be used while cancelling them
+     * public method to add the Request to the the single
+     * instance of RequestQueue created above.Setting a tag to every
+     * request helps in grouping them. Tags act as identifier
+     * for requests and can be used while cancelling them
      **/
-    public void addToRequestQueue(Request request, String tag)
-    {
+    public void addToRequestQueue(Request request, String tag) {
         request.setTag(tag);
         getRequestQueue().add(request);
 
     }
 
     /**
-     Cancel all the requests matching with the given tag
+     * Cancel all the requests matching with the given tag
      **/
 
-    public void cancelAllRequests(String tag)
-    {
+    public void cancelAllRequests(String tag) {
         getRequestQueue().cancelAll(tag);
     }
 }
