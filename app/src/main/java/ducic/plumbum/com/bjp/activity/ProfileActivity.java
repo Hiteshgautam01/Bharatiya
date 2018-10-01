@@ -33,7 +33,7 @@ import ducic.plumbum.com.bjp.utils.TimelineDetails;
  * Global Variables:	<>
  * Date of Creation:    <21/03/2018>
  */
-public class ProfileActivity extends AppCompatActivity implements CommentedPostsFragment.OnListFragmentInteractionListener, LikedPostsFragment.OnListFragmentInteractionListener{
+public class ProfileActivity extends AppCompatActivity implements CommentedPostsFragment.OnListFragmentInteractionListener, LikedPostsFragment.OnListFragmentInteractionListener {
 
     SharedPreferences sp;
     CommentedPostsFragment eaf;
@@ -47,10 +47,10 @@ public class ProfileActivity extends AppCompatActivity implements CommentedPosts
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ViewPager viewPager =  findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
-        TabLayout tabLayout =  findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setText("Voted");
         tabLayout.getTabAt(1).setText("Commented");
@@ -68,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements CommentedPosts
         upViewPager.setAdapter(adapter);
     }
 
-    public void getAllPosts(int counter){
+    public void getAllPosts(int counter) {
 
     }
 
@@ -91,6 +91,24 @@ public class ProfileActivity extends AppCompatActivity implements CommentedPosts
         } else {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main_inside, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+//        if(id == R.id.action_shout){
+//            // TODO: FILL THIS SECTION
+//        }else{
+//            finish();
+//        }
+        return super.onOptionsItemSelected(item);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -118,23 +136,5 @@ public class ProfileActivity extends AppCompatActivity implements CommentedPosts
         public CharSequence getPageTitle(int position) {
             return null;
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_inside, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-//        if(id == R.id.action_shout){
-//            // TODO: FILL THIS SECTION
-//        }else{
-//            finish();
-//        }
-        return super.onOptionsItemSelected(item);
     }
 }

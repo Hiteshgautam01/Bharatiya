@@ -1,25 +1,16 @@
 package ducic.plumbum.com.bjp.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.android.youtube.player.YouTubeStandalonePlayer;
-import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import java.util.List;
 
 import ducic.plumbum.com.bjp.R;
 import ducic.plumbum.com.bjp.utils.CommentDetails;
-import ducic.plumbum.com.bjp.utils.TimelineDetails;
 
 /**
  * Created by pankaj on 18/3/18.

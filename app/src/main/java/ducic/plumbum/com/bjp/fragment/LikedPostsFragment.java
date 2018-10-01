@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import ducic.plumbum.com.bjp.R;
-import ducic.plumbum.com.bjp.activity.TimelineActivity;
 import ducic.plumbum.com.bjp.adapter.TimelineAdapter;
 import ducic.plumbum.com.bjp.application.BhartiyaApplication;
 import ducic.plumbum.com.bjp.interfaces.Posts;
@@ -46,25 +44,24 @@ import ducic.plumbum.com.bjp.utils.Utils;
  * interface.
  */
 public class LikedPostsFragment extends Fragment implements Posts {
+    // TODO: Customize parameter argument names
+    private static final String ARG_COLUMN_COUNT = "column-count";
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    View view;
+    long previous_millis;
     private TimelineAdapter mAdapter;
     private List<TimelineDetails> mItems = new ArrayList<>();
     private int fb_start_id = 0;
     private int youtube_start_id = 0;
     private RecyclerView recyclerView;
-
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-
-    View view;
     private int number_of_retries = 0;
-    long previous_millis;
-
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -112,7 +109,7 @@ public class LikedPostsFragment extends Fragment implements Posts {
     }
 
     private void init() {
-        if (mItems.size()>0) {
+        if (mItems.size() > 0) {
             mAdapter = new TimelineAdapter(getContext(), mItems, this);
 
             recyclerView.setHasFixedSize(true);
@@ -121,38 +118,37 @@ public class LikedPostsFragment extends Fragment implements Posts {
 
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(mAdapter);
-        }else {
+        } else {
             RelativeLayout empty_layout = view.findViewById(R.id.empty_layout);
             empty_layout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
     }
 
-    void getData(){
+    void getData() {
 
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_voted_posts, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length() > 0){
+                if (response.length() > 0) {
                     number_of_retries = 0;
                     try {
                         JSONArray jA = new JSONArray(response);
-                        for (int i = 0; i < jA.length(); i++){
-                            mItems.add(new TimelineDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("message"), jA.getJSONObject(i).getString("url"), jA.getJSONObject(i).getString("image_link"), jA.getJSONObject(i).getString("source_name"), jA.getJSONObject(i).getInt("source"), jA.getJSONObject(i).getString("counter").contentEquals("null")?0:jA.getJSONObject(i).getInt("counter"), jA.getJSONObject(i).getString("timedate")));
+                        for (int i = 0; i < jA.length(); i++) {
+                            mItems.add(new TimelineDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("message"), jA.getJSONObject(i).getString("url"), jA.getJSONObject(i).getString("image_link"), jA.getJSONObject(i).getString("source_name"), jA.getJSONObject(i).getInt("source"), jA.getJSONObject(i).getString("counter").contentEquals("null") ? 0 : jA.getJSONObject(i).getInt("counter"), jA.getJSONObject(i).getString("timedate")));
                         }
                         if (fb_start_id == 0 && youtube_start_id == 0)
                             init();
-                        else{
+                        else {
                             mAdapter.notifyDataSetChanged();
                         }
                         previous_millis = System.currentTimeMillis();
-                        for (int i = mItems.size() - 1; i > 0; i--){
+                        for (int i = mItems.size() - 1; i > 0; i--) {
                             if (mItems.get(i).getSource_id() == 0) {
                                 fb_start_id = mItems.get(i).getId() - 1;
                                 break;
-                            }
-                            else if (mItems.get(i).getSource_id() == 1){
-                                youtube_start_id = mItems.get(i).getId()-1;
+                            } else if (mItems.get(i).getSource_id() == 1) {
+                                youtube_start_id = mItems.get(i).getId() - 1;
                             }
 
                         }
@@ -160,7 +156,7 @@ public class LikedPostsFragment extends Fragment implements Posts {
                         makeToast("Error loading timeline");
 //                        Log.e(TimelineActivity.class.getSimpleName(), e.toString());
                     }
-                }else{
+                } else {
                     makeToast("No response from server");
                 }
             }
@@ -168,17 +164,17 @@ public class LikedPostsFragment extends Fragment implements Posts {
             @Override
             public void onErrorResponse(VolleyError error) {
 //                Log.e(TimelineActivity.class.getSimpleName(), error.toString());
-                if (number_of_retries < 3){
+                if (number_of_retries < 3) {
                     number_of_retries++;
                     getData();
-                }else
+                } else
                     makeToast("No response from server");
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("page_first_source", String.valueOf(fb_start_id));
                 params.put("page_second_source", String.valueOf(youtube_start_id));
                 params.put("user_id", Constants.user_id);
@@ -191,7 +187,7 @@ public class LikedPostsFragment extends Fragment implements Posts {
 
     private void sendActions() {
         final JSONArray jA = new JSONArray();
-        for (int i = 0; i < Constants.actions.size(); i++){
+        for (int i = 0; i < Constants.actions.size(); i++) {
             JSONObject jO = new JSONObject();
             try {
                 jO.put("action_id", Constants.actions.get(i));
@@ -204,9 +200,9 @@ public class LikedPostsFragment extends Fragment implements Posts {
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_action, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length()>0)
+                if (response.length() > 0)
                     makeToast("Couldn't submit response");
-                else{
+                else {
                     Constants.actions.clear();
                     Constants.post_id.clear();
                 }
@@ -217,10 +213,10 @@ public class LikedPostsFragment extends Fragment implements Posts {
                 makeToast("Couldn't connect to server");
                 error.printStackTrace();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("actions", jA.toString());
                 if (Constants.user_id == null) {
                     SharedPreferences sp = BhartiyaApplication.getInstance().getSharedPreferences();
@@ -233,7 +229,7 @@ public class LikedPostsFragment extends Fragment implements Posts {
         BhartiyaApplication.getInstance().addToRequestQueue(request, "record_actions");
     }
 
-    private void makeToast(String s){
+    private void makeToast(String s) {
         View _view = view.findViewById(android.R.id.content);
         Utils.makeToast(_view, s);
     }
@@ -260,7 +256,7 @@ public class LikedPostsFragment extends Fragment implements Posts {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (Constants.actions.size() > 0){
+        if (Constants.actions.size() > 0) {
             sendActions();
         }
         mListener = null;

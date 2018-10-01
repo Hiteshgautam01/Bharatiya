@@ -21,8 +21,8 @@ import java.util.List;
 
 public class CustomTabHelper {
     private static final String CUSTOM_TAB_PACKAGE_NAME = "com.android.chrome";
-    private CustomTabsClient mCustomTabsClient;
     public CustomTabsSession mCustomTabsSession;
+    private CustomTabsClient mCustomTabsClient;
 
     public void bindCustomTabsService(final Activity activity, final Uri url) {
         if (mCustomTabsClient != null) return;

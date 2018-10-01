@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,10 +63,9 @@ public class CommentsActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (comment.getText().toString().length() == 0){
+                if (comment.getText().toString().length() == 0) {
                     makeToast("Please enter a message first");
-                }
-                else {
+                } else {
                     sendComment(comment.getText().toString());
                 }
             }
@@ -78,9 +76,9 @@ public class CommentsActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_record_comment, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length()>5){
+                if (response.length() > 5) {
                     makeToast("Server Error");
-                }else{
+                } else {
                     CommentDetails item = new CommentDetails(Integer.parseInt(response), Constants.user_name, comment.getText().toString());
                     mItems.add(item);
                     mAdapter.notifyDataSetChanged();
@@ -94,10 +92,10 @@ public class CommentsActivity extends AppCompatActivity {
                 makeToast("Couldn't submit response");
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("user_id", String.valueOf(Constants.user_id));
                 params.put("message", s);
                 params.put("post_id", String.valueOf(post_id));
@@ -108,11 +106,11 @@ public class CommentsActivity extends AppCompatActivity {
         BhartiyaApplication.getInstance().addToRequestQueue(request, "signin");
     }
 
-    void getData(){
+    void getData() {
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_comment_details, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length() > 0){
+                if (response.length() > 0) {
                     try {
                         JSONArray jA = new JSONArray(response);
                         for (int i = 0; i < jA.length(); i++)
@@ -124,7 +122,7 @@ public class CommentsActivity extends AppCompatActivity {
                         makeToast("Error loading comments");
 //                        Log.e(CommentsActivity.class.getSimpleName(), e.toString());
                     }
-                }else{
+                } else {
                     makeToast("No response from server");
                 }
             }
@@ -135,10 +133,10 @@ public class CommentsActivity extends AppCompatActivity {
                 makeToast("Couldn't fetch responses");
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("user_id", String.valueOf(Constants.user_id));
                 params.put("post_id", String.valueOf(post_id));
                 return params;
@@ -148,7 +146,7 @@ public class CommentsActivity extends AppCompatActivity {
         BhartiyaApplication.getInstance().addToRequestQueue(request, "signin");
     }
 
-    private void makeToast(String s){
+    private void makeToast(String s) {
         View view = findViewById(android.R.id.content);
         Utils.makeToast(view, s);
     }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.android.volley.AuthFailureError;
@@ -38,7 +37,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sp.contains("signed_in")){
+        if (sp.contains("signed_in")) {
             setContentView(R.layout.activity_splash_screen);
             Constants.user_id = sp.getString("user_id", null);
             Constants.user_name = sp.getString("user_name", null);
@@ -46,7 +45,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 //            Log.e("user_id", Constants.user_id);
             loadActivity(TimelineActivity.class);
 //            checkIfExists();
-        }else {
+        } else {
 
             loadActivity(SignUp.class);
         }
@@ -59,16 +58,16 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 if (status_code[0] == 200) {
-                    if (response.contentEquals(Constants.user_id)){
+                    if (response.contentEquals(Constants.user_id)) {
                         loadActivity(TimelineActivity.class);
-                    }else{
+                    } else {
                         makeToast("Couldn't verify ID. Please login again");
                         SharedPreferences.Editor editor = sp.edit();
                         editor.remove("signed_in");
                         editor.apply();
                         loadActivity(SignUp.class);
                     }
-                }else{
+                } else {
                     makeToast("Please restart the app");
                 }
             }
@@ -79,10 +78,10 @@ public class SplashScreenActivity extends AppCompatActivity {
                 error.printStackTrace();
                 finish();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("id", Constants.user_id);
                 return params;
             }
@@ -97,12 +96,12 @@ public class SplashScreenActivity extends AppCompatActivity {
         BhartiyaApplication.getInstance().addToRequestQueue(request, "verify_user");
     }
 
-    private void makeToast(String s){
+    private void makeToast(String s) {
         View view = findViewById(android.R.id.content);
         Utils.makeToast(view, s);
     }
 
-    private void loadActivity(Class activity){
+    private void loadActivity(Class activity) {
         Utils.loadActivity(this, activity);
         finish();
     }

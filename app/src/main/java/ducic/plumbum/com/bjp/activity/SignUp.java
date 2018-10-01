@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -73,7 +72,7 @@ public class SignUp extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_signup, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length() > 0){
+                if (response.length() > 0) {
                     editor.putBoolean("signed_in", true);
                     editor.putString("user_id", response);
                     editor.apply();
@@ -82,7 +81,7 @@ public class SignUp extends AppCompatActivity {
                     loading.setVisibility(View.GONE);
                     progress.stop();
                     loadActivity(SplashScreenActivity.class);
-                }else{
+                } else {
                     loading.setVisibility(View.GONE);
                     progress.stop();
                     makeToast("Server response incorrect");
@@ -96,10 +95,10 @@ public class SignUp extends AppCompatActivity {
                 makeToast("Error connecting to server");
                 error.printStackTrace();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("user_name", Constants.user_name);
                 params.put("user_id", user_id);
                 return params;
@@ -165,25 +164,24 @@ public class SignUp extends AppCompatActivity {
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        if (response != null && response.getError() == null){
+                        if (response != null && response.getError() == null) {
                             try {
                                 String user_id;
-                                if (response.getJSONObject().has("name")){
+                                if (response.getJSONObject().has("name")) {
                                     Constants.user_name = response.getJSONObject().getString("name");
-                                }else{
+                                } else {
                                     Constants.user_name = "Anonymous User";
                                 }
                                 if (response.getJSONObject().has("email")) {
                                     user_id = response.getJSONObject().getString("email");
-                                }
-                                else {
+                                } else {
                                     user_id = response.getJSONObject().getString("id");
                                 }
                                 submitData(user_id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        } else {
                             makeToast("Couldn't submit response");
                         }
                     }
@@ -203,7 +201,7 @@ public class SignUp extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }else
+        } else
             callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -218,7 +216,7 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-    void submitData(final String username){
+    void submitData(final String username) {
         SharedPreferences sp = BhartiyaApplication.getInstance().getSharedPreferences();
         final SharedPreferences.Editor editor = sp.edit();
         loadActivity(TimelineActivity.class);
@@ -229,7 +227,7 @@ public class SignUp extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_signup, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length() > 0){
+                if (response.length() > 0) {
                     editor.putBoolean("signed_in", true);
                     editor.putString("user_id", response);
                     editor.putString("user_name", Constants.user_name);
@@ -238,7 +236,7 @@ public class SignUp extends AppCompatActivity {
                     loading.setVisibility(View.GONE);
                     progress.stop();
                     loadActivity(SplashScreenActivity.class);
-                }else{
+                } else {
                     loading.setVisibility(View.GONE);
                     progress.stop();
                     makeToast("Server response incorrect");
@@ -252,10 +250,10 @@ public class SignUp extends AppCompatActivity {
                 makeToast("Error connecting to server");
                 error.printStackTrace();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("user_name", Constants.user_name);
                 params.put("user_id", username);
                 return params;
@@ -270,12 +268,12 @@ public class SignUp extends AppCompatActivity {
         super.onResume();
     }
 
-    private void makeToast(String s){
+    private void makeToast(String s) {
         View view = findViewById(android.R.id.content);
         Utils.makeToast(view, s);
     }
 
-    private void loadActivity(Class activity){
+    private void loadActivity(Class activity) {
         Utils.loadActivity(this, activity);
         finish();
     }

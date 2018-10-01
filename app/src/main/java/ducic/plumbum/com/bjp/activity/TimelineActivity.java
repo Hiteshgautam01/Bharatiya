@@ -46,7 +46,15 @@ import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
 
-public class TimelineActivity extends AppCompatActivity implements Posts, SwipeRefreshLayout.OnRefreshListener{
+public class TimelineActivity extends AppCompatActivity implements Posts, SwipeRefreshLayout.OnRefreshListener {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    long previous_millis;
+    boolean isLoading = false;
+    boolean first_time = true;
+    int filter = -1;
     private TimelineAdapter mAdapter;
     private List<TimelineDetails> originalItems = new ArrayList<>();
     private List<TimelineDetails> mItems = new ArrayList<>();
@@ -55,20 +63,12 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int number_of_retries = 0;
-    long previous_millis;
-    boolean isLoading = false;
-    boolean first_time = true;
-    int filter = -1;
-
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(0xFFFF7830);
         setSupportActionBar(toolbar);
 
@@ -93,44 +93,43 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
     }
 
 
-    void getData(){
+    void getData() {
         final ProgressBar loading = findViewById(R.id.progress_bar);
         loading.setIndeterminate(true);
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_event_details, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length() > 0){
+                if (response.length() > 0) {
                     number_of_retries = 0;
                     try {
                         JSONArray jA = new JSONArray(response);
                         if (fb_start_id == 0 && youtube_start_id == 0)
                             originalItems.clear();
-                        for (int i = 0; i < jA.length(); i++){
-                            TimelineDetails tD = new TimelineDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("message"), jA.getJSONObject(i).getString("url"), jA.getJSONObject(i).getString("image_link"), jA.getJSONObject(i).getString("source_name"), jA.getJSONObject(i).getInt("source"), jA.getJSONObject(i).getString("counter").contentEquals("null")?0:jA.getJSONObject(i).getInt("counter"), jA.getJSONObject(i).getString("timedate"));
+                        for (int i = 0; i < jA.length(); i++) {
+                            TimelineDetails tD = new TimelineDetails(jA.getJSONObject(i).getInt("id"), jA.getJSONObject(i).getString("message"), jA.getJSONObject(i).getString("url"), jA.getJSONObject(i).getString("image_link"), jA.getJSONObject(i).getString("source_name"), jA.getJSONObject(i).getInt("source"), jA.getJSONObject(i).getString("counter").contentEquals("null") ? 0 : jA.getJSONObject(i).getInt("counter"), jA.getJSONObject(i).getString("timedate"));
                             if (!originalItems.contains(tD)) {
                                 originalItems.add(tD);
                                 Log.e("getDATA", "Dont have it");
-                            }else{
+                            } else {
                                 Log.e("getDATA", "HAVE IT");
                             }
                         }
                         if (first_time) {
                             first_time = false;
                             init();
-                        }
-                        else{
+                        } else {
                             filterPosts();
                         }
                         previous_millis = System.currentTimeMillis();
-                        fb_start_id = originalItems.get(originalItems.size() - 3).getId()-1;
-                        youtube_start_id = originalItems.get(originalItems.size() - 1).getId()-1;
+                        fb_start_id = originalItems.get(originalItems.size() - 3).getId() - 1;
+                        youtube_start_id = originalItems.get(originalItems.size() - 1).getId() - 1;
                         swipeRefreshLayout.setRefreshing(false);
                         loading.setIndeterminate(false);
                     } catch (JSONException e) {
                         makeToast("Error loading timeline");
                         Log.e(TimelineActivity.class.getSimpleName(), e.toString());
                     }
-                }else{
+                } else {
                     makeToast("No response from server");
                 }
             }
@@ -138,17 +137,17 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TimelineActivity.class.getSimpleName(), error.toString());
-                if (number_of_retries < 3){
+                if (number_of_retries < 3) {
                     number_of_retries++;
                     getData();
-                }else
+                } else
                     makeToast("No response from server");
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("page_first_source", String.valueOf(fb_start_id));
                 params.put("page_second_source", String.valueOf(youtube_start_id));
                 return params;
@@ -160,7 +159,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
 
     private void sendActions() {
         final JSONArray jA = new JSONArray();
-        for (int i = 0; i < Constants.actions.size(); i++){
+        for (int i = 0; i < Constants.actions.size(); i++) {
             JSONObject jO = new JSONObject();
             try {
                 jO.put("action_id", Constants.actions.get(i));
@@ -173,9 +172,9 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         StringRequest request = new StringRequest(Request.Method.POST, Constants.url_action, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.length()>0)
+                if (response.length() > 0)
                     makeToast("Couldn't submit response");
-                else{
+                else {
                     Constants.actions.clear();
                     Constants.post_id.clear();
                 }
@@ -186,10 +185,10 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                 makeToast("Couldn't connect to server");
                 error.printStackTrace();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 params.put("actions", jA.toString());
                 if (Constants.user_id == null) {
                     SharedPreferences sp = BhartiyaApplication.getInstance().getSharedPreferences();
@@ -249,31 +248,25 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
                         .setIcon(R.drawable.ic_filter_list_black_1_24dp)
                         .setTitle("FILTER POSTS")
                         .setMessage("What do you want to see?")
-                        .setNeutralButton("Both", new DialogInterface.OnClickListener()
-                        {
+                        .setNeutralButton("Both", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                            public void onClick(DialogInterface dialog, int which) {
                                 filter = -1;
                                 filterPosts();
                             }
                         })
 
-                        .setPositiveButton("Only Images", new DialogInterface.OnClickListener()
-                        {
+                        .setPositiveButton("Only Images", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                            public void onClick(DialogInterface dialog, int which) {
                                 filter = 0;
                                 filterPosts();
                             }
                         })
 
-                        .setNegativeButton("Only Videos", new DialogInterface.OnClickListener()
-                        {
+                        .setNegativeButton("Only Videos", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                            public void onClick(DialogInterface dialog, int which) {
                                 filter = 1;
                                 filterPosts();
                             }
@@ -292,7 +285,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
             public void onClick(final View view) {
 
                 counter[0]++;
-                if(counter[0] < 5){
+                if (counter[0] < 5) {
                     konfettiView.build()
                             .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
                             .setDirection(0.0, 359.0)
@@ -306,9 +299,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
 
                     time_current[0] = System.currentTimeMillis();
 
-                }
-
-                else{
+                } else {
                     time_after_five[0] = System.currentTimeMillis();
                     if (counter[0] == 5) {
                         makeToast("Your fingers are not stopping, Please try again after some time");
@@ -322,7 +313,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         });
     }
 
-    private void filterPosts(){
+    private void filterPosts() {
         mItems.clear();
         if (filter == -1) {
             Log.e("IN -1", "YES" + originalItems.size());
@@ -336,7 +327,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
         mAdapter.updateList(mItems);
     }
 
-    private void makeToast(String s){
+    private void makeToast(String s) {
         View view = findViewById(android.R.id.content);
         Utils.makeToast(view, s);
     }
@@ -358,7 +349,7 @@ public class TimelineActivity extends AppCompatActivity implements Posts, SwipeR
     @Override
     protected void onPause() {
         super.onPause();
-        if (Constants.actions.size() > 0){
+        if (Constants.actions.size() > 0) {
             sendActions();
         }
     }
