@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
+
     <RelativeLayout
         android:id="@+id/empty_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:background="#ffffff"
-        >
+        android:visibility="gone">
+
         <ImageView
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@mipmap/confused_paper"
             android:layout_alignParentBottom="true"
-            />
+            android:src="@mipmap/confused_paper" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Oh, that's odd.\nI couldn't find any event matching this section"
+            android:layout_marginTop="@dimen/text_margin"
             android:fontFamily="sans-serif-thin"
-            android:textColor="#000000"
-            android:textSize="24sp"
             android:paddingLeft="@dimen/text_margin"
             android:paddingRight="@dimen/text_margin"
-            android:layout_marginTop="@dimen/text_margin"
-            />
+            android:text="Oh, that's odd.\nI couldn't find any event matching this section"
+            android:textColor="#000000"
+            android:textSize="24sp" />
     </RelativeLayout>
-    <android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/list"
         android:name="com.pankaj.maukascholars.fragments.EventsAppliedFragment"
         android:layout_width="match_parent"
