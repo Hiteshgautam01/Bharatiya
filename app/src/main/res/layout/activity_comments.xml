@@ -1,40 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/colorAccent"
-    >
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/add_comment_wrapper"
-        />
+        android:layout_above="@+id/add_comment_wrapper" />
+
     <RelativeLayout
         android:id="@+id/add_comment_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFF"
-        >
+        android:background="#FFF">
+
         <EditText
             android:id="@+id/comment_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/send_comment_button"
             android:layout_alignBottom="@id/send_comment_button"
-            />
+            android:layout_toLeftOf="@+id/send_comment_button" />
+
         <Button
             android:id="@+id/send_comment_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:background="@color/colorPrimary"
-            android:textColor="#ffffff"
             android:text="SEND"
-            />
+            android:textColor="#ffffff" />
 
     </RelativeLayout>
 </RelativeLayout>
